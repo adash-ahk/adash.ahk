@@ -1001,7 +1001,7 @@ value (*): The value to clone.
 #### Example
 ```autohotkey
 object := [{ "a": 1 }, { "b": 2 }]
-shallowclone := A.clone(object)
+shallowclone := _.clone(object)
 object.a := 2
 
 ;object
@@ -1027,7 +1027,7 @@ value (*): The value to recursively clone.
 
 ```autohotkey
 object := [{ "a": [[1, 2, 3]] }, { "b": 2 }]
-deepclone := A.cloneDeep(object)
+deepclone := _.cloneDeep(object)
 object[1].a := 2
 
 ; object
