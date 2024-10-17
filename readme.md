@@ -1,3 +1,4 @@
+
 # **Array methods**
 ## .chunk
 Creates an array of elements split into groups the length of size. If array can't be split evenly, the final chunk will be the remaining elements.
@@ -45,6 +46,21 @@ _.compact([0, 1, false, 2, "", 3])
 ; => [1, 2, 3]
 
 ```
+
+
+
+## .concat
+Creates a new array concatenating array with any additional arrays and/or values.
+
+#### Arguments
+array (Array): The array to concatenate.
+
+[values] (...*): The values to concatenate.
+
+
+#### Returns
+(Array): Returns the new concatenated array.
+
 
 
 
@@ -184,7 +200,7 @@ _.dropRight(100)
 Fills elements of array with value from start up to, but not including, end.
 
 > [!Note]
-> This method mutates array.
+> this method mutates the array.
 
 
 #### Arguments
@@ -204,8 +220,7 @@ value (*): The value to fill array with.
 #### Example
 
 ```autohotkey
-arr := [1, 2, 3]
-_.fill(arr, "a")
+arr := [1, 2, 3]_.fill(arr, "a")
 ; => ["a", "a", "a"]
 
 _.fill([4, 6, 8, 10], "*", 2, 3)
@@ -347,35 +362,6 @@ _.head(100)
 
 ```
 
-## .includes
-Checks if `value` is in `collection`. If `collection` is a string, it's checked for a substring of value.
-
-
-#### Arguments
-collection (Array|Object|string): The collection to inspect.
-
-value (*): The value to search for.
-
-[fromIndex:=1] (number): The index to search from.
-
-
-#### Returns
-(boolean): Returns true if value is found, else false.
-
-
-#### Example
-
-```autohotkey
-_.includes([1, 2, 3], 1)
-; => true
-
-_.includes("inStr", "Str")
-; => true
-
-_.stringCaseSense := true
-_.includes("inStr", "str")
-; => false
-```
 
 
 ## .indexOf
@@ -400,15 +386,13 @@ value (*): The value to search for.
 _.indexOf([1, 2, 1, 2], 2)
 ; => 2
 
-; Search from the `fromIndex`.
-_.indexOf([1, 2, 1, 2], 2, 3)
+; Search from the `fromIndex`._.indexOf([1, 2, 1, 2], 2, 3)
 ; => 4
 
 _.indexOf(["fred", "barney"], "pebbles")
 ; => -1
 
-_.stringCaseSense := true
-_.indexOf(["fred", "barney"], "Fred")
+_.stringCaseSense := true_.indexOf(["fred", "barney"], "Fred")
 ; => -1
 
 ```
@@ -523,7 +507,7 @@ _.last(100)
 
 
 ## .lastIndexOf
-This method is like [_.indexOf](/docs?id=indexof) except that it iterates over elements of array from right to left.
+This method is like [_.indexOf](/?id=indexof) except that it iterates over elements of array from right to left.
 
 
 #### Arguments
@@ -544,12 +528,10 @@ value (*): The value to search for.
 _.lastIndexOf([1, 2, 1, 2], 2)
 ; => 4
 
-; Search from the `fromIndex`.
-_.lastIndexOf([1, 2, 1, 2], 1, 2)
+; Search from the `fromIndex`._.lastIndexOf([1, 2, 1, 2], 1, 2)
 ; => 1
 
-_.stringCaseSense := true
-_.lastIndexOf(["fred", "barney"], "Fred")
+_.stringCaseSense := true_.lastIndexOf(["fred", "barney"], "Fred")
 ; => -1
 
 ```
@@ -692,7 +674,7 @@ _.sortedIndex([30, 50], 99)
 
 
 ## .sortedUniq
-This method is like [_.uniq](/docs?id=uniq) except that it's optimized for sorted arrays.
+This method is like [_.uniq](/?id=uniq) except that it's optimized for sorted arrays.
 
 
 #### Arguments
@@ -862,29 +844,6 @@ _.uniq([2, 1, 2])
 
 
 
-## .unzip
-This method is like [_.zip](/docs?id=zip) except that it accepts an array of grouped elements and creates an array regrouping the elements to their pre-zip configuration.
-
-#### Arguments
-array (Array): The array of grouped elements to process.
-
-
-#### Returns
-
-(Array): Returns the new array of regrouped elements.
-
-#### Example
-
-```autohotkey
-zipped := _.zip(["a", "b"], [1, 2], [true, false])
-; => [["a", 1, true], ["b", 2, true]]
-_.unzip(zipped)
-; => [["a", "b"], [1, 2], [true, false]]
-
-```
-
-
-
 ## .without
 Creates an array excluding all given values.
 
@@ -934,7 +893,7 @@ _.zip(["a", "b"], [1, 2], [true, true])
 
 
 ## .zipObject
-This method is like [_.fromPairs](/docs?id=frompairs) except that it accepts two arrays, one of property identifiers and one of corresponding values.
+This method is like [_.fromPairs](/?id=frompairs) except that it accepts two arrays, one of property identifiers and one of corresponding values.
 
 
 #### Arguments
@@ -956,9 +915,30 @@ _.zipObject(["a", "b"], [1, 2])
 
 ```
 
+
+
+
 # **Collection methods**
+## .includes
+Checks if value is in collection. If collection is a string, it's checked for a substring of value.
+
+
+#### Arguments
+collection (Array|Object|string): The collection to inspect.
+
+value (*): The value to search for.
+
+[fromIndex:=1] (number): The index to search from.
+
+
+#### Returns
+(boolean): Returns true if value is found, else false.
+
+
+
+
 ## .map
-Creates an array of values by running each element in `collection` thru `iteratee`. The iteratee is invoked with three arguments: (value, index|key, collection).
+Creates an array of values by running each element in collection thru iteratee. The iteratee is invoked with three arguments: (value, index|key, collection).
 
 
 #### Arguments
@@ -974,21 +954,37 @@ collection (Array|Object): The collection to iterate over.
 #### Example
 
 ```autohotkey
-
-_.map([4, 8], fn_square)
+fn_square(n) {	return n * n}_.map([4, 8], fn_square)
 ; => [16, 64]
 
-fn_square(n) {
-	return n * n
-}
+_.map({ a: 4, b: 8 }, fn_square)
+; => [16, 64]
+
+_.map({ a: 4, b: 8 })
+; => [4, 8]
+
 ```
+
+
+
+## .size
+Gets the size of collection by returning its length for array-like values or the number of own enumerable string keyed properties for objects.
+
+
+#### Arguments
+collection (Array|Object|string): The collection to inspect.
+
+
+#### Returns
+(number): Returns the collection size.
+
 
 
 
 
 # **Lang methods**
 ## .clone
-Creates a shallow clone of `value`. Supports cloning arrays, objects, numbers, strings.
+Creates a shallow clone of value. Supports cloning arrays, objects, numbers, strings.
 
 #### Arguments
 value (*): The value to clone.
@@ -1000,19 +996,20 @@ value (*): The value to clone.
 
 #### Example
 ```autohotkey
-object := [{ "a": 1 }, { "b": 2 }]
-shallowclone := _.clone(object)
-object.a := 2
-
-;object
-; => [{ "a": 2 }, { "b": 2 }]
-
-;shallowclone
-; => [{ "a": 1 }, { "b": 2 }]
+obj := [{ a: 1 }, { b: 2 }]
+shallowclone := _.cloneobj
+obj.a := 2
+object
+; => [{ a: 2 }, { b: 2 }]
+shallowclone
+; => [{ a: 1 }, { b: 2 }]
 ```
 
+
+
+
 ## .cloneDeep
-This method is like [_.clone](/docs?id=clone) except that it recursively clones `value`.
+This method is like [_.clone](/?id=clone) except that it recursively clones value.
 
 
 #### Arguments
@@ -1023,19 +1020,6 @@ value (*): The value to recursively clone.
 (*): Returns the deep cloned value.
 
 
-#### Example
-
-```autohotkey
-object := [{ "a": [[1, 2, 3]] }, { "b": 2 }]
-deepclone := _.cloneDeep(object)
-object[1].a := 2
-
-; object
-; => [{ "a": 2 }, { "b": 2 }]
-
-; deepclone
-; => [{ "a": [[1, 2, 3]] }, { "b": 2 }]
-```
 
 
 ## .isAlnum
@@ -1054,7 +1038,7 @@ value (*): The value to check.
 
 ```autohotkey
 _.isAlnum(1)
-; => true
+; => false
 
 _.isAlnum("hello")
 ; => true
@@ -1091,7 +1075,7 @@ _.isArray("abc")
 ; => false
 
 _.isArray({key: "value"})
-; => true
+; => false
 
 ```
 
@@ -1128,6 +1112,28 @@ _.isBoolean(0)
 
 
 
+## .isBuffer
+Checks if `value` is a buffer.
+
+
+#### Arguments
+value (*): The value to check.
+
+
+#### Returns
+(boolean): Returns true if value is a buffer, else false.
+
+
+#### Example
+
+```autohotkey
+myBuffer := buffer(20, 100)_.isBuffer(myBuffer)
+; => true
+
+```
+
+
+
 ## .isEqual
 Performs a deep comparison between two values to determine if they are equivalent.
 
@@ -1156,9 +1162,30 @@ _.isEqual({ a: 1 }, { a: 1 })
 _.isEqual(1, 1, 2)
 ; => false
 
-_.stringCaseSense := true
-_.isEqual({ a: "a" }, { a: "A" })
+_.stringCaseSense := true_.isEqual({ a: "a" }, { a: "A" })
 ; => false
+
+```
+
+
+
+## .isError
+Checks if value is an exception error obj.
+
+
+#### Arguments
+value (*): The value to check.
+
+
+#### Returns
+(boolean): Returns true if value is an exception object, else false.
+
+
+#### Example
+
+```autohotkey
+; TODO:_.isError(Exception("something broke"))
+; => true
 
 ```
 
@@ -1204,12 +1231,8 @@ value (*): The `value` to check.
 #### Example
 
 ```autohotkey
-bndFunc := strLen.bind("one")
-_.isFunction(bndFunc)
+bndFunc := strLen.bind("one")_.isFunction(bndFunc)
 ; => true
-
-isFunc(bndFunc)
-; => false
 
 _.isFunction(_.isString)
 ; => true
@@ -1252,7 +1275,7 @@ _.isInteger("1")
 ## .isMatch
 Performs a partial deep comparison between object and source to determine if object contains equivalent property values.
 
-Partial comparisons will match empty array and empty object source values against any array or object value, respectively. See [_.isEqual](/docs?id=isEqual) for a list of supported value comparisons.
+Partial comparisons will match empty array and empty object source values against any array or object value, respectively. See [_.isEqual](/?id=isEqual) for a list of supported value comparisons.
 
 
 #### Arguments
@@ -1267,17 +1290,16 @@ source obj: The object of property values to match.
 #### Example
 
 ```autohotkey
-obj := { a: 1, b: 2, c: 3 }
-_.isMatch(object, {b: 2})
+obj := { a: 1, b: 2, c: 3 }_.isMatch(obj, {b: 2})
 ; => true
 
-_.isMatch(object, {b: 2, c: 3})
+_.isMatch(obj, {b: 2, c: 3})
 ; => true
 
-_.isMatch(object, {b: 1})
+_.isMatch(obj, {b: 1})
 ; => false
 
-_.isMatch(object, {b: 2, z: 99})
+_.isMatch(obj, {b: 2, z: 99})
 ; => false
 
 ```
@@ -1366,7 +1388,7 @@ _.isString(1)
 
 
 ## .isUndefined
-Checks if value is unset or undefined.
+Checks if value is undefined or blank.
 
 
 #### Arguments
@@ -1401,6 +1423,64 @@ _.isUndefined(false)
 ```
 
 
+
+## .toString
+Converts value to a string. An empty string is returned for undefined values. The sign of `-0` is preserved.
+
+
+#### Arguments
+value (*): The value to convert.
+
+
+#### Returns
+(boolean): Returns the converted string.
+
+
+
+
+## .typeOf
+This method returns a string indicating the type of `value`.
+
+
+#### Arguments
+value (*): the value to check.
+
+
+#### Returns
+(string): Returns value's type.
+
+
+#### Example
+
+```autohotkey
+_.typeOf(42)
+; => "integer"
+
+_.typeOf(0.25)
+; => "float"
+
+_.typeOf("0.25")
+; => "string"
+
+_.typeOf("blubber")
+; => "string"
+
+_.typeOf([])
+; => "array"
+
+_.typeOf({})
+; => "object"
+
+_.typeOf(map())
+; => "map"
+
+_.typeOf(object)
+; => "class"
+
+_.typeOf(_)
+; => "class"
+
+```
 
 
 
@@ -1461,6 +1541,547 @@ _.random(5)
 
 _.random(1.2, 5.2)
 ; => a floating-point number between 1.2 and 5.2
+```
+
+
+
+
+# **String methods**
+## .endsWith
+Checks if `string` ends with the given target string.
+
+
+#### Arguments
+string (string): The string to inspect.
+
+[target] (string): The string to search for.
+
+[position:=strLen()] (number): The position to search up to.
+
+
+#### Returns
+(boolean): Returns true if string ends with target, else false.
+
+
+#### Example
+
+```autohotkey
+_.endsWith("abc", "c")
+; => true
+
+_.endsWith("abc", "b")
+; => false
+
+_.endsWith("abc", "b", 2)
+; => true
+
+```
+
+
+
+## .escape
+Converts the characters "&", "<", ">", '"', and "'" in `string` to their corresponding HTML entities.
+
+> [!Note]
+> No other characters are escaped. To escape additional characters use a third-party library.
+
+Though the ">" character is escaped for symmetry, characters like ">" and "/" don't need escaping in HTML and have no special meaning unless they're part of a tag or unquoted attribute value. See Mathias [Bynens's article](https://mathiasbynens.be/notes/ambiguous-ampersands) (under "semi-related fun fact") for more details.
+
+When working with HTML you should always quote attribute values to reduce XSS vectors.
+
+
+#### Arguments
+[string:=""] (string): The string to escape.
+
+
+#### Returns
+(string): Returns the escaped string.
+
+
+#### Example
+
+```autohotkey
+str := "fred, barney, & pebbles"_.escape(str)
+; => "fred, barney, &amp; pebbles"
+
+```
+
+
+
+## .lowerFirst
+Converts the first character of `string` to lower case.
+
+
+#### Arguments
+[string:=""] (string): The string to convert.
+
+
+#### Returns
+(string): Returns the converted string.
+
+
+#### Example
+
+```autohotkey
+_.lowerFirst("Fred")
+; => "fred"
+
+_.lowerFirst("FRED")
+; => "fRED"
+
+```
+
+
+
+## .pad
+Pads `string` on the left and right sides if it's shorter than `length`. Padding characters are truncated if they can't be evenly divided by length.
+
+#### Arguments
+[string:=""] (string): The string to pad.
+
+[length:=0] (number): The padding length.
+
+[chars:=" "] (string): The string used as padding.
+
+
+#### Returns
+(string): Returns the padded string.
+
+
+#### Example
+
+```autohotkey
+_.pad("abc", 8)
+; => "  abc   "
+
+_.pad("abc", 8, "_-")
+; => "_-abc_-_"
+
+_.pad("abc", 3)
+; => "abc"
+
+```
+
+
+
+## .padEnd
+Pads `string` on the right side if it's shorter than `length`. Padding characters are truncated if they exceed length.
+
+#### Arguments
+[string:=""] (string): The string to pad.
+
+[length:=0] (number): The padding length.
+
+[chars:=" "] (string): The string used as padding.
+
+
+#### Returns
+(string): Returns the padded string.
+
+
+#### Example
+
+```autohotkey
+_.padEnd("abc", 6)
+; => "abc   "
+
+_.padEnd("abc", 6, "_-")
+; => "abc_-_"
+
+```
+
+
+
+## .padStart
+Pads `string` on the left side if it's shorter than `length`. Padding characters are truncated if they exceed length.
+
+#### Arguments
+[string:=""] (string): The string to pad.
+
+[length:=0] (number): The padding length.
+
+[chars:=" "] (string): The string used as padding.
+
+
+#### Returns
+(string): Returns the padded string.
+
+
+#### Example
+
+```autohotkey
+_.padStart("abc", 6)
+; => "   abc"
+
+_.padStart("abc", 6, "_-")
+; => "_-_abc"
+
+```
+
+
+
+## .parseInt
+Converts string to an integer of the specified radix. If radix is `""` undefined or `0`, a radix of `10` is used unless value is a hexadecimal, in which case a radix of `16` is used.
+
+#### Arguments
+string (string): The string to convert.
+
+[radix:=10] (number): The radix to interpret value by.
+
+
+#### Returns
+
+(number): Returns the converted integer.
+
+
+#### Example
+
+```autohotkey
+_.parseInt("08")
+; => 8
+
+_.map(["6", "08", "10"], _.parseInt)
+; => [6, 8, 10]
+
+```
+
+
+
+## .repeat
+Repeats the given string `n` times.
+
+
+#### Arguments
+[string:=""] (string): The string to repeat.
+
+[n:=1] (number): The number of times to repeat the string.
+
+#### Returns
+
+(string): Returns the repeated string.
+
+
+#### Example
+
+```autohotkey
+_.repeat("*", 3)
+; => "***"
+
+_.repeat("abc", 2)
+; => "abcabc"
+
+_.repeat("abc", 0)
+; => ""
+
+```
+
+
+
+## .startsWith
+Checks if `string` starts with the given target string.
+
+
+#### Arguments
+string (string): The string to inspect.
+
+[target] (string): The string to search for.
+
+[position:=1] (number): The position to search from.
+
+
+#### Returns
+(boolean): Returns true if string starts with target, else false.
+
+
+#### Example
+
+```autohotkey
+_.startsWith("abc", "a")
+; => true
+
+_.startsWith("abc", "b")
+; => false
+
+_.startsWith("abc", "b", 2)
+; => true
+
+_.stringCaseSense := true_.startsWith("abc", "A")
+; => false
+
+```
+
+
+
+## .toLower
+Converts `string`, as a whole, to lower case.
+
+
+#### Arguments
+string (string): The string to convert.
+
+
+#### Returns
+(string): Returns the lower cased string.
+
+#### Example
+
+```autohotkey
+_.toLower("--Foo-Bar--")
+; => "--foo-bar--"
+
+_.toLower("fooBar")
+; => "foobar"
+
+_.toLower("__FOO_BAR__")
+; => "__foo_bar__"
+
+```
+
+
+
+## .toUpper
+Converts `string`, as a whole, to upper case
+
+
+#### Arguments
+string (string): The string to convert.
+
+
+#### Returns
+(string): Returns the upper cased string.
+
+#### Example
+
+```autohotkey
+_.toUpper("--foo-bar--")
+; => "--FOO-BAR--"
+
+_.toUpper("fooBar")
+; => "FOOBAR"
+
+_.toUpper("__foo_bar__")
+; => "__FOO_BAR__"
+
+```
+
+
+
+## .trim
+Removes leading and trailing whitespace or specified characters from `string`.
+
+
+#### Arguments
+[string:=""] (string): The string to trim.
+
+[chars:=whitespace] (string): The characters to trim.
+
+
+#### Returns
+(string): Returns the trimmed string.
+
+
+#### Example
+
+```autohotkey
+_.trim("  abc  ")
+; => "abc"
+
+_.trim("-_-abc-_-", "_-")
+; => "abc"
+
+_.map([" foo  ", "  bar  "], _.trim)
+; => ["foo", "bar"]
+
+```
+
+
+
+## .trimEnd
+Removes trailing whitespace or specified characters from `string`.
+
+
+#### Arguments
+[string:=""] (string): The string to trim.
+
+[chars:=whitespace] (string): The characters to trim.
+
+
+#### Returns
+(string): Returns the trimmed string.
+
+
+#### Example
+
+```autohotkey
+_.trimEnd("  abc  ")
+; => "  abc"
+
+_.trimEnd("-_-abc-_-", "_-")
+; => "-_-abc"
+
+```
+
+
+
+## .trimStart
+Removes leading whitespace or specified characters from `string`.
+
+
+#### Arguments
+[string:=""] (string): The string to trim.
+
+[chars:=whitespace] (string): The characters to trim.
+
+
+#### Returns
+(string): Returns the trimmed string.
+
+
+#### Example
+
+```autohotkey
+_.trimStart("  abc  ")
+; => "abc  "
+
+_.trimStart("-_-abc-_-", "_-")
+; => "abc-_-"
+
+```
+
+
+
+## .truncate
+Truncates `string` if it's longer than the given maximum string length. The last characters of the truncated string are replaced with the omission string which defaults to "...".
+
+
+#### Arguments
+[string:=""] (string): The string to truncate.
+
+[options:={}] (Object): The options object.
+
+[options.length:=30] (number): The maximum string length.
+
+[options.omission:="..."] (string): The string to indicate text is omitted.
+
+[options.separator] (RegExp|string): The separator pattern to truncate to.
+
+
+#### Returns
+(string): Returns the truncated string.
+
+
+#### Example
+
+```autohotkey
+str := "hi-diddly-ho there, neighborino"_.truncate(str)
+; => "hi-diddly-ho there, neighbor..."
+
+_.truncate(str, {length: 24, separator: " "})
+; => "hi-diddly-ho there,..."
+
+```
+
+
+
+## .unescape
+The inverse of [_.escape](#escape) this method converts the HTML entities &amp;, &lt;, &gt;, &quot;, and &#39; in `string` to their corresponding characters.
+
+> [!Note]
+> No other HTML entities are unescaped. To unescape additional HTML entities use a dedicated third-party library.
+
+#### Arguments
+[string:=""] (string): The string to unescape.
+
+
+#### Returns
+(string): Returns the unescaped string.
+
+
+#### Example
+
+```autohotkey
+str := "fred, barney, &amp; pebbles"_.unescape(str)
+; => "fred, barney, & pebbles"
+
+```
+
+
+
+## .upperFirst
+Converts the first character of `string` to upper case.
+
+
+#### Arguments
+[string:=""] (string): The string to convert.
+
+
+#### Returns
+(string): Returns the converted string.
+
+
+#### Example
+
+```autohotkey
+_.upperFirst("fred")
+; => "Fred"
+
+_.upperFirst("FRED")
+; => "FRED"
+
+```
+
+
+
+## .words
+Splits `string` into an array of its words.
+
+
+#### Arguments
+string:="" (string): The string to inspect.
+
+[pattern] (RegExp|string): The pattern to match words.
+
+
+#### Returns
+
+(Array): Returns the words of string.
+
+
+#### Example
+
+```autohotkey
+_.words("fred, barney, & pebbles")
+; => ["fred", "barney", "pebbles"]
+
+_.words("fred, barney, & pebbles", "[^, ]+")
+; => ["fred", "barney", "&", "pebbles"]
+
+```
+
+
+
+
+# **Util methods**
+## .identity
+This method returns the first argument it receives.
+
+#### Arguments
+value (*): Any value.
+
+
+#### Returns
+(*): Returns value.
+
+
+#### Example
+
+```autohotkey
+obj := {a: 1}_.identity(obj)
+; => {a: 1}
+
+(_.identity(obj) == obj)
+; => true
+
 ```
 
 
