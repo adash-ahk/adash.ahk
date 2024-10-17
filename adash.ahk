@@ -35,9 +35,6 @@ class adash {
 		}
 		return l_array
 	}
-	concat(param_value*) {
-		return 0
-	}
 	static depthOf(param, param_depth := 1) {
 		if (!isObject(param)) {
 			this._throwTypeException()
@@ -762,15 +759,6 @@ class adash {
 			}
 		}
 		return true
-	}
-	isError(param_value) {
-		if (param_value.has("message")
-		&& param_value.has("what")
-		&& param_value.has("file")
-		&& param_value.has("line")) {
-			return true
-		}
-		return false
 	}
 	static isFloat(param) {
 		if(type(param) == "Float") {
