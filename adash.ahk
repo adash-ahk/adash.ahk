@@ -20,7 +20,7 @@ class adash {
 		, "LTrim", { maxParams: 1, type: "function" }
 		, "RTrim", { maxParams: 1, type: "function" })
 	; --- Static Methods ---
-		static chunk(param_array,param_size:=1) {
+	static chunk(param_array,param_size:=1) {
 		if ((!isObject(param_array) && !this.isString(param_array)) || !this.isNumber(param_size)) {
 			this._throwTypeException()
 		}
@@ -88,25 +88,24 @@ class adash {
 		}
 		return l_array
 	}
-	static drop(param_array, param_n := 1) {
+	static drop(param_array,param_n:= 1) {
 		if (!this.isNumber(param_n)) {
 			this._throwTypeException()
 		}
-		if (param_array == [] || param_array == "") {
+		switch (type(param_array)) {
+			case "Array":
+				l_array := this.clone(param_array)
+			default:
+				l_array := strSplit(param_array)
+		}
+		if (l_array.length == 0 || param_array == "") {
 			return []
 		}
 		if (param_n == 0) {
 			return param_array
 		}
-		if (isObject(param_array)) {
-			l_array := this.clone(param_array)
-		} else {
-			l_array := strSplit(param_array)
-		}
 		param_n := this.clamp(param_n, 1, l_array.length)
-		loop (param_n) {
-			l_array.removeAt(1)
-		}
+		l_array.removeAt(1, param_n)
 		return l_array
 	}
 	static dropRight(param_array,param_n:=1) {
@@ -419,7 +418,7 @@ class adash {
 	}
 	static take(param_array,param_n:=1) {
 		if (!this.isNumber(param_n)) {
-			this._throwTypeException
+			this._throwTypeException()
 		}
 		if (this.isString(param_array) || this.isNumber(param_array)) {
 			l_array := []
