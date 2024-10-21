@@ -20,7 +20,7 @@ class adash {
 		, "LTrim", { maxParams: 1, type: "function" }
 		, "RTrim", { maxParams: 1, type: "function" })
 	; --- Static Methods ---
-	static chunk(param_array,param_size:=1) {
+		static chunk(param_array,param_size:=1) {
 		if ((!isObject(param_array) && !this.isString(param_array)) || !this.isNumber(param_size)) {
 			this._throwTypeException()
 		}
@@ -216,12 +216,17 @@ class adash {
 		}
 	}
 	static indexOf(param_array,param_value,fromIndex:=1) {
-		if (!isObject(param_array)) {
+		if (!isObject(param_array) && !this.isString(param_array)) {
 			this._throwTypeException()
 		}
-		if (isObject(param_value)) {
-			param_value := this._hash(param_value)
-			param_array := this.map(param_array, this._hash)
+		switch (type(param_value)) {
+			case "Array":
+				param_value := this._hash(param_value)
+				param_array := this.map(param_array, this._hash)
+		}
+		switch (type(param_array)) {
+			case "String":
+				param_array := strSplit(param_array)
 		}
 		if (param_array.hasProp("__Item")) {
 			for key, value in param_array {
@@ -414,22 +419,28 @@ class adash {
 	}
 	static take(param_array,param_n:=1) {
 		if (!this.isNumber(param_n)) {
-			this._throwTypeException()
+			this._throwTypeException
 		}
-		if (isObject(param_array)) {
+		if (this.isString(param_array) || this.isNumber(param_array)) {
+			l_array := []
+			loop parse, (param_array) {
+				if (A_Index > param_n) {
+					break
+				}
+				l_array.push(a_loopfield)
+			}
+			return l_array
+		}
+		if this.isObject(param_array) && param_array.hasProp("__Item") {
 			param_array := this.clone(param_array)
-		} else {
-			param_array := strSplit(param_array)
 		}
+		param_n := min(param_n, param_array.length)
 		l_array := []
 		for index, value in param_array {
-			if (index > param_n) {
+			if (a_index > param_n) {
 				break
 			}
 			l_array.push(value)
-		}
-		if (l_array.length == 0 || param_n == 0) {
-			return []
 		}
 		return l_array
 	}
@@ -879,12 +890,7 @@ class adash {
 		}
 		return false
 	}
-	static isObject(param) {
-		if (isObject(param)) {
-			return true
-		}
-		return false
-	}
+	static isObject(param) => isObject(param)
 	static isString(param) {
 		if (type(param) == "String") {
 			return true
