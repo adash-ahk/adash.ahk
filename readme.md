@@ -28,7 +28,7 @@ _.chunk(["a", "b", "c", "d"], 3)
 
 
 ## .compact
-Creates an array with all falsey values removed. The values false, 0, and "" are falsey.
+Creates an array with all falsey values removed. The values `false`, `0`, and `""` are falsey.
 
 
 #### Arguments
@@ -46,21 +46,6 @@ _.compact([0, 1, false, 2, "", 3])
 ; => [1, 2, 3]
 
 ```
-
-
-
-## .concat
-Creates a new array concatenating array with any additional arrays and/or values.
-
-#### Arguments
-array (Array): The array to concatenate.
-
-[values] (...*): The values to concatenate.
-
-
-#### Returns
-(Array): Returns the new concatenated array.
-
 
 
 
@@ -96,12 +81,12 @@ _.depthOf([1, [2, [3, [4]], 5]])
 
 
 ## .difference
-Creates an array of array values not included in the other given arrays. The order of result values are determined by the first array.
+Creates an array of `array` values not included in the other given arrays. The order of result values are determined by the first array.
 
 #### Arguments
 array (Array): The array to inspect.
 
-values (...Array): The values to exclude.
+values (Array*): The values to exclude.
 
 
 #### Returns
@@ -119,7 +104,7 @@ _.difference([2, 1], [2, 3])
 
 
 ## .drop
-Creates a slice of array with n elements dropped from the beginning.
+Creates a slice of `array` with `n` elements dropped from the beginning.
 
 
 #### Arguments
@@ -147,8 +132,8 @@ _.drop([1, 2, 3], 5)
 _.drop([1, 2, 3], 0)
 ; => [1, 2, 3]
 
-_.drop("fred")
-; => ["r", "e", "d"]
+_.drop("neo")
+; => ["e", "o"]
 
 _.drop(100)
 ; => ["0", "0"]
@@ -186,8 +171,8 @@ _.dropRight([1, 2, 3], 5)
 _.dropRight([1, 2, 3], 0)
 ; => [1, 2, 3]
 
-_.dropRight("fred")
-; => ["f", "r", "e"]
+_.dropRight("neo")
+; => ["n", "e"]
 
 _.dropRight(100)
 ; => ["1", "0"]
@@ -200,7 +185,7 @@ _.dropRight(100)
 Fills elements of array with value from start up to, but not including, end.
 
 > [!Note]
-> this method mutates the array.
+> This method mutates the array.
 
 
 #### Arguments
@@ -220,7 +205,8 @@ value (*): The value to fill array with.
 #### Example
 
 ```autohotkey
-arr := [1, 2, 3]_.fill(arr, "a")
+arr := [1, 2, 3]
+_.fill(arr, "a")
 ; => ["a", "a", "a"]
 
 _.fill([4, 6, 8, 10], "*", 2, 3)
@@ -354,8 +340,8 @@ _.head([1, 2, 3])
 _.head([])
 ; => ""
 
-_.head("fred")
-; => "f"
+_.head("neo")
+; => "n"
 
 _.head(100)
 ; => "1"
@@ -365,7 +351,7 @@ _.head(100)
 
 
 ## .indexOf
-Gets the index at which the first occurrence of value is found in array. If fromIndex is negative, it's used as the offset from the end of array.
+Gets the index at which the first occurrence of `value` is found in `array`. If `fromIndex` is negative, it's used as the offset from the end of `array`.
 
 
 #### Arguments
@@ -386,13 +372,15 @@ value (*): The value to search for.
 _.indexOf([1, 2, 1, 2], 2)
 ; => 2
 
-; Search from the `fromIndex`._.indexOf([1, 2, 1, 2], 2, 3)
+; Search from the `fromIndex`.
+_.indexOf([1, 2, 1, 2], 2, 3)
 ; => 4
 
-_.indexOf(["fred", "barney"], "pebbles")
+_.indexOf(["neo", "morpheus"], "trinity")
 ; => -1
 
-_.stringCaseSense := true_.indexOf(["fred", "barney"], "Fred")
+_.stringCaseSense := true
+_.indexOf(["neo", "morpheus"], "Neo")
 ; => -1
 
 ```
@@ -416,8 +404,8 @@ array (Array): The array to query.
 _.initial([1, 2, 3])
 ; => [1, 2]
 
-_.initial("fred")
-; => ["f", "r", "e"]
+_.initial("neo")
+; => ["n", "e"]
 
 _.initial(100)
 ; => ["1", "0"]
@@ -496,18 +484,18 @@ _.last([1, 2, 3])
 _.last([])
 ; => ""
 
-_.last("fred")
-; => "d"
+_.last("neo")
+; => "o"
 
 _.last(100)
-; => "0"
+; => 0
 
 ```
 
 
 
 ## .lastIndexOf
-This method is like [_.indexOf](/?id=indexof) except that it iterates over elements of array from right to left.
+This method is like [_.indexOf](#indexof) except that it iterates over elements of array from right to left.
 
 
 #### Arguments
@@ -528,10 +516,12 @@ value (*): The value to search for.
 _.lastIndexOf([1, 2, 1, 2], 2)
 ; => 4
 
-; Search from the `fromIndex`._.lastIndexOf([1, 2, 1, 2], 1, 2)
+; Search from the `fromIndex`.
+_.lastIndexOf([1, 2, 1, 2], 1, 2)
 ; => 1
 
-_.stringCaseSense := true_.lastIndexOf(["fred", "barney"], "Fred")
+_.stringCaseSense := true
+_.lastIndexOf(["neo", "morpheus"], "Neo")
 ; => -1
 
 ```
@@ -564,8 +554,8 @@ _.nth([1, 2, 3], -3)
 _.nth([1, 2, 3], 5)
 ; => ""
 
-_.nth("fred")
-; => "f"
+_.nth("neo")
+; => "n"
 
 _.nth(100)
 ; => "1"
@@ -633,8 +623,8 @@ _.slice([1, 2, 3], 1)
 _.slice([1, 2, 3], 5)
 ; => []
 
-_.slice("fred")
-; => ["f", "r", "e", "d"]
+_.slice("neo")
+; => ["n", "e", "o"]
 
 _.slice(100)
 ; => ["1", "0", "0"]
@@ -674,7 +664,7 @@ _.sortedIndex([30, 50], 99)
 
 
 ## .sortedUniq
-This method is like [_.uniq](/?id=uniq) except that it's optimized for sorted arrays.
+This method is like [_.uniq](#uniq) except that it's optimized for sorted arrays.
 
 
 #### Arguments
@@ -713,8 +703,8 @@ array (Array): The array to query.
 _.tail([1, 2, 3])
 ; => [2, 3]
 
-_.tail("fred")
-; => ["r", "e", "d"]
+_.tail("neo")
+; => ["e", "o"]
 
 _.tail(100)
 ; => ["0", "0"]
@@ -752,8 +742,8 @@ _.take([1, 2, 3], 5)
 _.take([1, 2, 3], 0)
 ; => []
 
-_.take("fred")
-; => ["f"]
+_.take("neo")
+; => ["n"]
 
 _.take(100)
 ; => ["1"]
@@ -791,8 +781,8 @@ _.takeRight([1, 2, 3], 5)
 _.takeRight([1, 2, 3], 0)
 ; => []
 
-_.takeRight("fred")
-; => ["d"]
+_.takeRight("neo")
+; => ["o"]
 
 _.takeRight(100)
 ; => ["0"]
@@ -870,9 +860,6 @@ _.without([2, 1, 2, 3], 1, 2)
 ## .zip
 Creates an array of grouped elements, the first of which contains the first elements of the given arrays, the second of which contains the second elements of the given arrays, and so on.
 
-> [!Warning]
-> This method has not reached pairity with Lodash.
-> Output will not match Lodash output in the event the length of all supplied arrays are not the same.
 
 #### Arguments
 [arrays*] (...Array): The arrays to process.
@@ -893,7 +880,7 @@ _.zip(["a", "b"], [1, 2], [true, true])
 
 
 ## .zipObject
-This method is like [_.fromPairs](/?id=frompairs) except that it accepts two arrays, one of property identifiers and one of corresponding values.
+This method is like [_.fromPairs](#frompairs) except that it accepts two arrays, one of property identifiers and one of corresponding values.
 
 
 #### Arguments
@@ -940,6 +927,10 @@ value (*): The value to search for.
 ## .map
 Creates an array of values by running each element in collection thru iteratee. The iteratee is invoked with three arguments: (value, index|key, collection).
 
+Many adash.ahk methods are guarded to work as iteratees
+
+The guarded methods are:
+trimEnd, trimStart, parseInt, chunk, take, takeRight, drop, sampleSize, words, random
 
 #### Arguments
 collection (Array|Object): The collection to iterate over.
@@ -954,7 +945,10 @@ collection (Array|Object): The collection to iterate over.
 #### Example
 
 ```autohotkey
-fn_square(n) {	return n * n}_.map([4, 8], fn_square)
+fn_square(n) {
+	return n * n
+}
+_.map([4, 8], fn_square)
 ; => [16, 64]
 
 _.map({ a: 4, b: 8 }, fn_square)
@@ -967,8 +961,51 @@ _.map({ a: 4, b: 8 })
 
 
 
+## .sample
+Gets a single random element from `collection`.
+
+#### Arguments
+collection (Array|Object|String): The collection to sample.
+
+
+#### Returns
+(*): Returns the random element.
+
+
+#### Example
+```autohotkey
+_.sample([1, 2, 3, 4])
+; => 2
+```
+
+
+
+
+## .shuffle
+Creates an array of shuffled values, using a version of the [Fisher-Yates shuffle](https://en.wikipedia.org/wiki/Fisher-Yates_shuffle).
+
+#### Arguments
+collection (Array|Object): The collection to shuffle.
+
+
+#### Returns
+(Array): Returns the new shuffled array.
+
+
+#### Example
+```autohotkey
+_.shuffle([1, 2, 3, 4])
+; => [4, 1, 3, 2]
+
+_.shuffle(["morpheus", "neo", "trinity"])
+; => ["trinity", "morpheus", "neo"]
+```
+
+
+
+
 ## .size
-Gets the size of collection by returning its length for array-like values or the number of own enumerable string keyed properties for objects.
+Gets the size of `collection` by returning its length for array-like values or the number of own enumerable string keyed properties for objects.
 
 
 #### Arguments
@@ -978,6 +1015,20 @@ collection (Array|Object|string): The collection to inspect.
 #### Returns
 (number): Returns the collection size.
 
+
+#### Example
+
+```autohotkey
+_.size([1, 2, 3])
+; => 3
+
+_.size({ a: 1, b: 2 })
+; => 2
+
+_.size("trinity")
+; => 7
+
+```
 
 
 
@@ -995,21 +1046,19 @@ value (*): The value to clone.
 
 
 #### Example
+
 ```autohotkey
-obj := [{ a: 1 }, { b: 2 }]
-shallowclone := _.cloneobj
-obj.a := 2
-object
-; => [{ a: 2 }, { b: 2 }]
-shallowclone
-; => [{ a: 1 }, { b: 2 }]
+objects := [{ a: 1 }, { b: 2 }]
+shallow := _.clone(objects)
+_.isEqual(objects, shallow)
+; => true
+
 ```
 
 
 
-
 ## .cloneDeep
-This method is like [_.clone](/?id=clone) except that it recursively clones value.
+This method is like [_.clone](#clone) except that it recursively clones value.
 
 
 #### Arguments
@@ -1019,6 +1068,18 @@ value (*): The value to recursively clone.
 #### Returns
 (*): Returns the deep cloned value.
 
+
+#### Example
+
+```autohotkey
+obj := [{ a: [[1, 2, 3]] }, { b: 2 }]
+deepclone := _.cloneDeep(obj)
+obj[1].a := 2
+; object
+; => [{ "a": 2 }, { "b": 2 }]
+; deepclone
+; => [{ "a": [[1, 2, 3]] }, { "b": 2 }]
+```
 
 
 
@@ -1127,7 +1188,8 @@ value (*): The value to check.
 #### Example
 
 ```autohotkey
-myBuffer := buffer(20, 100)_.isBuffer(myBuffer)
+myBuffer := buffer(20, 100)
+_.isBuffer(myBuffer)
 ; => true
 
 ```
@@ -1162,30 +1224,9 @@ _.isEqual({ a: 1 }, { a: 1 })
 _.isEqual(1, 1, 2)
 ; => false
 
-_.stringCaseSense := true_.isEqual({ a: "a" }, { a: "A" })
+_.stringCaseSense := true
+_.isEqual({ a: "a" }, { a: "A" })
 ; => false
-
-```
-
-
-
-## .isError
-Checks if value is an exception error obj.
-
-
-#### Arguments
-value (*): The value to check.
-
-
-#### Returns
-(boolean): Returns true if value is an exception object, else false.
-
-
-#### Example
-
-```autohotkey
-; TODO:_.isError(Exception("something broke"))
-; => true
 
 ```
 
@@ -1231,13 +1272,11 @@ value (*): The `value` to check.
 #### Example
 
 ```autohotkey
-bndFunc := strLen.bind("one")_.isFunction(bndFunc)
+bndFunc := strLen.bind("one")
+_.isFunction(bndFunc)
 ; => true
 
-_.isFunction(_.isString)
-; => true
-
-_.isFunction(_.matchesProperty("a", 1))
+_.isFunction(_.size)
 ; => true
 
 _.isFunction([1, 2, 3])
@@ -1262,9 +1301,6 @@ value (*): The value to check.
 #### Example
 
 ```autohotkey
-_.isInteger(1)
-; => true
-
 _.isInteger("1")
 ; => false
 
@@ -1275,7 +1311,7 @@ _.isInteger("1")
 ## .isMatch
 Performs a partial deep comparison between object and source to determine if object contains equivalent property values.
 
-Partial comparisons will match empty array and empty object source values against any array or object value, respectively. See [_.isEqual](/?id=isEqual) for a list of supported value comparisons.
+Partial comparisons will match empty array and empty object source values against any array or object value, respectively. See [_.isEqual](#isEqual) for a list of supported value comparisons.
 
 
 #### Arguments
@@ -1290,7 +1326,8 @@ source obj: The object of property values to match.
 #### Example
 
 ```autohotkey
-obj := { a: 1, b: 2, c: 3 }_.isMatch(obj, {b: 2})
+obj := { a: 1, b: 2, c: 3 }
+_.isMatch(obj, {b: 2})
 ; => true
 
 _.isMatch(obj, {b: 2, c: 3})
@@ -1485,6 +1522,284 @@ _.typeOf(_)
 
 
 
+# **Math methods**
+## .add
+Adds two numbers.
+
+
+#### Arguments
+augend (number): The first number in an addition.
+
+addend (number): The second number in an addition.
+
+
+#### Returns
+(number): Returns the total.
+
+
+#### Example
+
+```autohotkey
+_.add(6, 4)
+; => 10
+
+```
+
+
+
+## .ceil
+Computes `number` rounded up to `precision`.
+
+
+#### Arguments
+number (number): The number to round up.
+
+[precision:=0] (number): The precision to round up to.
+
+
+#### Returns
+(number): Returns the rounded up number.
+
+
+#### Example
+
+```autohotkey
+_.ceil(4.006)
+; => 5
+
+_.ceil(6.004, 2)
+; => 6.01
+
+_.ceil(6040, -2)
+; => 6100
+
+```
+
+
+
+## .divide
+Divide two numbers.
+
+
+#### Arguments
+dividend (number): The first number in a division.
+
+divisor (number): The second number in a division.
+
+
+#### Returns
+(number): Returns the quotient.
+
+
+#### Example
+
+```autohotkey
+_.divide(6, 4)
+; => 1.5
+
+```
+
+
+
+## .floor
+Computes `number` rounded down to `precision`.
+
+
+#### Arguments
+number (number): The number to round down.
+
+[precision:=0] (number): The precision to round down to.
+
+
+#### Returns
+(number): Returns the rounded down number.
+
+_.floor(4.006)
+; => 4
+
+_.floor(0.046, 2)
+; => 0.04
+
+_.floor(4060, -2)
+; => 4000
+
+```
+
+
+
+## .max
+Computes the maximum value of `array`. If `array` is empty or falsey, `""` is returned.
+
+
+#### Arguments
+array (Array): The array to iterate over.
+
+
+#### Returns
+(*): Returns the maximum value.
+
+
+#### Example
+
+```autohotkey
+_.max([4, 2, 8, 6])
+; => 8
+
+_.max([])
+; => ""
+
+```
+
+
+
+## .mean
+Computes the mean of the values in `array`.
+
+
+#### Arguments
+array (Array): The array to iterate over.
+
+
+#### Returns
+(number): Returns the mean.
+
+
+#### Example
+
+```autohotkey
+_.mean([4, 2, 8, 6])
+; => 5
+
+```
+
+
+
+## .min
+Computes the minimum value of `array`. If array is empty or falsey, `""` is returned.
+
+
+#### Arguments
+array (Array): The array to iterate over.
+
+
+#### Returns
+(*): Returns the minimum value.
+
+
+#### Example
+
+```autohotkey
+_.min([4, 2, 8, 6])
+; => 2
+
+_.min([])
+; => ""
+
+```
+
+
+
+## .multiply
+Multiply two numbers.
+
+
+#### Arguments
+multiplier (number): The first number in a multiplication.
+
+multiplicand (number): The second number in a multiplication.
+
+
+#### Returns
+(number): Returns the product.
+
+
+#### Example
+
+```autohotkey
+_.multiply(6, 4)
+; => 24
+
+```
+
+
+
+## .round
+Computes `number` rounded to `precision`.
+
+
+#### Arguments
+number (number): The number to round.
+
+[precision:=0] (number): The precision to round to.
+
+
+#### Returns
+(number): Returns the rounded number.
+
+
+#### Example
+
+```autohotkey
+_.round(4.006)
+; => 4
+
+_.round(4.006, 2)
+; => 4.01
+
+_.round(4060, -2)
+; => 4100
+
+```
+
+
+
+## .subtract
+Subtract two numbers.
+
+
+#### Arguments
+minuend (number): The first number in a subtraction.
+
+subtrahend (number): The second number in a subtraction.
+
+
+#### Returns
+(number): Returns the difference.
+
+
+#### Example
+
+```autohotkey
+_.subtract(6, 4)
+; => 2
+
+```
+
+
+
+## .sum
+Computes the sum of the values in `array`.
+
+
+#### Arguments
+array (Array): The array to iterate over.
+
+
+#### Returns
+(number): Returns the sum.
+
+
+#### Example
+
+```autohotkey
+_.sum([4, 2, 8, 6])
+; => 20
+
+```
+
+
+
+
 # **Number methods**
 ## .clamp
 Clamps number within the inclusive lower and upper bounds.
@@ -1516,7 +1831,7 @@ _.clamp(10, -5, 5)
 
 
 ## .random
-Produces a random number between the inclusive lower and upper bounds. If floating is true, or either lower or upper are floats, a floating-point number is returned instead of an integer. Uses AutoHotkey's pseudo-random [Random](https://www.autohotkey.com/docs/commands/Random.htm) command.
+Produces a random number between the inclusive lower and upper bounds. If floating is true, or either lower or upper are floats, a floating-point number is returned instead of an integer. Uses AutoHotkey's pseudo-random [Random](https://www.autohotkey.com/docs/v2/lib/Random.htm) command.
 
 
 #### Arguments
@@ -1541,6 +1856,9 @@ _.random(5)
 
 _.random(1.2, 5.2)
 ; => a floating-point number between 1.2 and 5.2
+
+_.map(_.random([10, 10, 10]))
+; => an array of random numbers between 0 and 10
 ```
 
 
@@ -1601,8 +1919,9 @@ When working with HTML you should always quote attribute values to reduce XSS ve
 #### Example
 
 ```autohotkey
-str := "fred, barney, & pebbles"_.escape(str)
-; => "fred, barney, &amp; pebbles"
+str := "neo, morpheus, & trinity"
+_.escape(str)
+; => "neo, morpheus, &amp; trinity"
 
 ```
 
@@ -1623,8 +1942,8 @@ Converts the first character of `string` to lower case.
 #### Example
 
 ```autohotkey
-_.lowerFirst("Fred")
-; => "fred"
+_.lowerFirst("Neo")
+; => "neo"
 
 _.lowerFirst("FRED")
 ; => "fRED"
@@ -1805,7 +2124,8 @@ _.startsWith("abc", "b")
 _.startsWith("abc", "b", 2)
 ; => true
 
-_.stringCaseSense := true_.startsWith("abc", "A")
+_.stringCaseSense := true
+_.startsWith("abc", "A")
 ; => false
 
 ```
@@ -1973,7 +2293,8 @@ Truncates `string` if it's longer than the given maximum string length. The last
 #### Example
 
 ```autohotkey
-str := "hi-diddly-ho there, neighborino"_.truncate(str)
+str := "hi-diddly-ho there, neighborino"
+_.truncate(str)
 ; => "hi-diddly-ho there, neighbor..."
 
 _.truncate(str, {length: 24, separator: " "})
@@ -2000,8 +2321,9 @@ The inverse of [_.escape](#escape) this method converts the HTML entities &amp;,
 #### Example
 
 ```autohotkey
-str := "fred, barney, &amp; pebbles"_.unescape(str)
-; => "fred, barney, & pebbles"
+str := "neo, morpheus, &amp; trinity"
+_.unescape(str)
+; => "neo, morpheus, & trinity"
 
 ```
 
@@ -2022,8 +2344,8 @@ Converts the first character of `string` to upper case.
 #### Example
 
 ```autohotkey
-_.upperFirst("fred")
-; => "Fred"
+_.upperFirst("neo")
+; => "Neo"
 
 _.upperFirst("FRED")
 ; => "FRED"
@@ -2050,11 +2372,11 @@ string:="" (string): The string to inspect.
 #### Example
 
 ```autohotkey
-_.words("fred, barney, & pebbles")
-; => ["fred", "barney", "pebbles"]
+_.words("neo, morpheus, & trinity")
+; => ["neo", "morpheus", "trinity"]
 
-_.words("fred, barney, & pebbles", "[^, ]+")
-; => ["fred", "barney", "&", "pebbles"]
+_.words("neo, morpheus, & trinity", "[^, ]+")
+; => ["neo", "morpheus", "&", "trinity"]
 
 ```
 
@@ -2076,11 +2398,45 @@ value (*): Any value.
 #### Example
 
 ```autohotkey
-obj := {a: 1}_.identity(obj)
+obj := {a: 1}
+_.identity(obj)
 ; => {a: 1}
 
-(_.identity(obj) == obj)
-; => true
+assert.true(_.identity(obj) == obj)
+```
+
+
+
+
+# **Array methods**
+## .first
+Gets the first element of array.
+
+#### Aliases
+`.first`
+
+#### Arguments
+array (Array): The array to query.
+
+
+#### Returns
+(*): Returns the first element of array.
+
+
+#### Example
+
+```autohotkey
+_.head([1, 2, 3])
+; => 1
+
+_.head([])
+; => ""
+
+_.head("neo")
+; => "n"
+
+_.head(100)
+; => "1"
 
 ```
 
