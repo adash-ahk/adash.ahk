@@ -4,7 +4,7 @@ class adash {
 	static throwExceptions := true
 	static limit := -1
 	; --- Guarded Methods ---
-	static _gaurded := map(this.prototype.__class ".trim", { maxParams: 1, type: "self" }
+	static _guarded := map(this.prototype.__class ".trim", { maxParams: 1, type: "self" }
 		, this.prototype.__class ".trimEnd", { maxParams: 1, type: "self" }
 		, this.prototype.__class ".trimStart", { maxParams: 1, type: "self" }
 		, this.prototype.__class ".parseInt", { maxParams: 1, type: "self" }
@@ -681,8 +681,8 @@ class adash {
 		}
 	}
 	static _findGuarded(target) {
-		if (this._gaurded.has(target.name)) {
-			return this._gaurded[target.name]
+		if (this._guarded.has(target.name)) {
+			return this._guarded[target.name]
 		}
 		return {type: "none"}
 	}
