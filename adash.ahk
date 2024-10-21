@@ -1,15 +1,35 @@
 class adash {
-	static stringCaseSense := true
+	; --- Static Variables ---
+	static stringCaseSense := false
 	static throwExceptions := true
 	static limit := -1
-	static _gaurded := map(this.prototype.__class ".trim", 1
-		, this.prototype.__class ".parseInt", 1)
+	; --- Guarded Methods ---
+	static _gaurded := map(this.prototype.__class ".trim", { maxParams: 1, type: "self" }
+		, this.prototype.__class ".trimEnd", { maxParams: 1, type: "self" }
+		, this.prototype.__class ".trimStart", { maxParams: 1, type: "self" }
+		, this.prototype.__class ".parseInt", { maxParams: 1, type: "self" }
+		, this.prototype.__class ".chunk", { maxParams: 1, type: "self" }
+		, this.prototype.__class ".take", { maxParams: 1, type: "self" }
+		, this.prototype.__class ".takeRight", { maxParams: 1, type: "self" }
+		, this.prototype.__class ".parseInt", { maxParams: 1, type: "self" }
+		, this.prototype.__class ".drop", { maxParams: 1, type: "self" }
+		, this.prototype.__class ".sampleSize", { maxParams: 1, type: "self" }
+		, this.prototype.__class ".words", { maxParams: 1, type: "self" }
+		, this.prototype.__class ".random", { maxParams: 1, type: "self" }
+		, "Trim", { maxParams: 1, type: "function" }
+		, "LTrim", { maxParams: 1, type: "function" }
+		, "RTrim", { maxParams: 1, type: "function" })
+	; --- Static Methods ---
 	static chunk(param_array,param_size:=1) {
-		if (!isObject(param_array) || !this.isNumber(param_size)) {
+		if ((!isObject(param_array) && !this.isString(param_array)) || !this.isNumber(param_size)) {
 			this._throwTypeException()
 		}
 		l_array := []
-		param_array := this.clone(param_array)
+		if (this.isString(param_array)) {
+			param_array := strSplit(param_array)
+		} else {
+			param_array := this.clone(param_array)
+		}
 		while (param_array.length > 0) {
 			l_innerArr := []
 			loop (param_size) {
@@ -477,7 +497,7 @@ class adash {
 		return l_array
 	}
 	static zip(param_arrays*) {
-		if (!IsObject(param_arrays)) {
+		if (!isObject(param_arrays)) {
 			this._throwTypeException()
 		}
 		l_array := []
@@ -546,47 +566,100 @@ class adash {
 		}
 	}
 	static map(param_collection,param_iteratee:="__identity") {
+		if (!isObject(param_collection) && !this.isString(param_collection)) {
+			this._throwTypeException()
+		}
+		if (this.isString(param_collection)) {
+			l_collection := strSplit(param_collection)
+		} else {
+			l_collection := this.cloneDeep(param_collection)
+		}
+		l_array := []
+		valType := type(l_collection)
+		switch (valType) {
+			case "Object":
+				for key, value in l_collection.ownProps() {
+					l_array.push(this._applyPredicate(l_collection, key, value, param_iteratee))
+				}
+			default:
+				for key, value in l_collection {
+					l_array.push(this._applyPredicate(l_collection, key, value, param_iteratee))
+				}
+		}
+		return l_array
+	}
+	static sample(param_collection) {
+		if (!this.isString(param_collection) && !isObject(param_collection)) {
+			this._throwTypeException()
+		}
+		if (this.isString(param_collection)) {
+			param_collection := strSplit(param_collection)
+		}
+		if (param_collection.length == 0 ) {
+			return ""
+		}
+		l_array := param_collection.clone()
+		return l_array[this.random(1, l_array.length)]
+	}
+	static shuffle(param_collection) {
 		if (!isObject(param_collection)) {
 			this._throwTypeException()
 		}
-		l_collection := this.cloneDeep(param_collection)
-		l_array := []
-		if (param_iteratee == "__identity") {
-			param_iteratee := this.identity
+		switch (type(param_collection)) {
+			case "Array":
+				l_array := this.clone(param_collection)
+			case "Object":
+				l_array := this.map(param_collection)
 		}
-		if (l_collection.hasProp("__Item")) {
-			for key, value in l_collection {
-				l_array.push(this._applyPredicate(l_collection, key, value, param_iteratee))
-			}
-		} else {
-			for key, value in l_collection.ownProps() {
-				l_array.push(this._applyPredicate(l_collection, key, value, param_iteratee))
-			}
+		l_index := l_array.length
+		loop (l_index - 1) {
+			randomIndex := random(1, l_index)
+			l_tempVar := l_array[l_index]
+			l_array[l_index] := l_array[randomIndex]
+			l_array[randomIndex] := l_tempVar
+			l_index--
 		}
 		return l_array
 	}
 	static size(param_collection) {
-		if (type(param_collection) == "Object") {
-			return ObjOwnPropCount(param_collection)
-		} else if (type(param_collection) == "String") {
-			return strLen(param_collection)
+		switch type(param_collection), false {
+			case "array":
+				return param_collection.length
+			case "object":
+				return objOwnPropCount(param_collection)
+			case "string":
+				return strLen(param_collection)
+			case "map":
+				return param_collection.count
+			default:
+				return 0
 		}
-		return param_collection.length
+		return ""
 	}
 	static _applyPredicate(param_collection,param_key,param_value,param_predicate) {
 		if (param_predicate == "__identity") {
 			param_predicate := this.identity
 		}
-		callWithArgs := this._findGuarded(this._gaurded, param_predicate)
-		if (callWithArgs != false) {
-			switch (callWithArgs) {
-				case 1:
-					return param_predicate.call(this, param_value)
-				case 2:
-					return param_predicate.call(this, param_value, param_key)
-				case 3:
-					return param_predicate.call(this, param_value, param_key, param_collection)
-			}
+		guarded := this._findGuarded(param_predicate)
+		switch (guarded.type) {
+			case "self":
+				switch (guarded.maxParams) {
+					case 1:
+						return param_predicate.call(this, param_value)
+					case 2:
+						return param_predicate.call(this, param_value, param_key)
+					case 3:
+						return param_predicate.call(this, param_value, param_key, param_collection)
+				}
+			case "function":
+				switch (guarded.maxParams) {
+					case 1:
+						return param_predicate.call(param_value)
+					case 2:
+						return param_predicate.call(param_value, param_key)
+					case 3:
+						return param_predicate.call(param_value, param_key, param_collection)
+				}
 		}
 		if (this.includes(param_predicate.name, this.prototype.__class ".")) {
 			switch (param_predicate.maxParams) {
@@ -607,11 +680,11 @@ class adash {
 				return param_predicate.call(param_value, param_key, param_collection)
 		}
 	}
-	static _findGuarded(obj, target) {
-		if (obj.has(target.name)) {
-			return obj[target.name]
+	static _findGuarded(target) {
+		if (this._gaurded.has(target.name)) {
+			return this._gaurded[target.name]
 		}
-		return false
+		return {type: "none"}
 	}
 	static _hash(dataArray) {
 		dataArray := strSplit(this.toString(dataArray))
@@ -632,47 +705,49 @@ class adash {
 		return format("{:08X}", hash & 0xFFFFFFFF)
 	}
 	static _stringify(param_value?) {
-	    if (!IsSet(param_value)) {
-	        return "unset"
-	    }
-	    paramValueType := Type(param_value)
-	    switch paramValueType, 0 {
-	        case "String":
-	            return "'" param_value "'"
-	        case "Integer", "Float":
-	            return param_value
-	        default:
-	            selfValue := "", iterValue := "", outValue := ""
-	            try selfValue := this.toString(param_value.ToString())
-	            if paramValueType = "Object" {
-	                for key, value in param_value.OwnProps() {
-	                    iterValue .= key ": " this._stringify(value) ", "
-	                }
-	                iterValue := RTrim(iterValue, ", ")
-	            } else if paramValueType != "Array" {
-	                try {
-	                    enumValue := param_value.__Enum(2)
-	                    while (enumValue.Call(&enumVal1, &enumVal2))
-	                        iterValue .= this._stringify(enumVal1) ": " this._stringify(enumVal2?) ", "
-	                }
-	            }
-	            if !IsSet(enumValue) && paramValueType != "Object" {
-	                try {
-	                    enumValue := param_value.__Enum(1)
-	                    while (enumValue.Call(&enumVal))
-	                        iterValue .= this._stringify(enumVal?) ", "
-	                }
-	            }
-	            iterValue := RTrim(iterValue, ", ")
-	            if !selfValue && !iterValue && !((paramValueType = "Array" && param_value.Length = 0) || (paramValueType = "Map" && param_value.Count = 0) || (paramValueType = "Object" && ObjOwnPropCount(param_value) = 0)) {
-	                return paramValueType
-				} else if (selfValue && iterValue) {
-	                outValue .= "value:" selfValue ", iter:[" iterValue "]"
-				} else {
-	                outValue .= selfValue iterValue
+		if (!IsSet(param_value)) {
+			return "unset"
+		}
+		paramValueType := type(param_value)
+		switch paramValueType, false {
+			case "string":
+				return "'" param_value "'"
+			case "integer", "float":
+				return param_value
+			default:
+				selfValue := "", iterValue := "", outValue := ""
+				try selfValue := this.toString(param_value.ToString())
+				if (paramValueType = "object") {
+					for key, value in param_value.OwnProps() {
+						iterValue .= key ": " this._stringify(value) ", "
+					}
+					iterValue := rTrim(iterValue, ", ")
+				} else if (paramValueType != "Array") {
+					try {
+						enumValue := param_value.__Enum(2)
+						while (enumValue.Call(&enumVal1, &enumVal2)) {
+							iterValue .= this._stringify(enumVal1) ": " this._stringify(enumVal2?) ", "
+						}
+					}
 				}
-	            return (paramValueType = "Object") ? "{" outValue "}" : (paramValueType = "Array") ? "[" outValue "]" : paramValueType "(" outValue ")"
-	    }
+				if (!IsSet(enumValue) && paramValueType != "object") {
+					try {
+						enumValue := param_value.__Enum(1)
+						while (enumValue.Call(&enumVal)) {
+							iterValue .= this._stringify(enumVal?) ", "
+						}
+					}
+				}
+				iterValue := RTrim(iterValue, ", ")
+				if (!selfValue && !iterValue && !((paramValueType = "array" && param_value.Length = 0) || (paramValueType = "Map" && param_value.Count = 0) || (paramValueType = "Object" && ObjOwnPropCount(param_value) = 0))) {
+					return paramValueType
+				} else if (selfValue && iterValue) {
+					outValue .= "value:" selfValue ", iter:[" iterValue "]"
+				} else {
+					outValue .= selfValue iterValue
+				}
+				return (paramValueType = "object") ? "{" outValue "}" : (paramValueType = "Array") ? "[" outValue "]" : paramValueType "(" outValue ")"
+		}
 	}
 	static clone(param_value) {
 		if (IsObject(param_value)) {
@@ -689,18 +764,15 @@ class adash {
 		if (!isObject(param)) {
 			return param
 		}
-		clone := param.clone()
-		if (clone.hasProp("__Item")) {
-			for key, value in clone {
-				if (isObject(value)) {
-					clone[key] := this.cloneDeep(value)
-				}
+		if (param.hasProp("__Item")) {
+			clone := []
+			for value in param {
+				clone.push(this.cloneDeep(value))
 			}
 		} else {
-			for key, value in clone.ownProps() {
-				if (isObject(value)) {
-					clone.defineProp(key, this.cloneDeep(value))
-				}
+			clone := {}
+			for key, value in param.OwnProps() {
+				clone.%key% := this.cloneDeep(value)
 			}
 		}
 		return clone
@@ -835,6 +907,130 @@ class adash {
 	static typeOf(param_value?) {
 		return this.toLower(type(param_value))
 	}
+	static add(param_augend,param_addend) {
+		if (!this.isNumber(param_augend) || !this.isNumber(param_addend)) {
+			this._throwTypeException()
+		}
+		return param_augend + param_addend
+	}
+	static ceil(param_number, param_precision := 0) {
+		if (!this.isNumber(param_number) || !this.isNumber(param_precision)) {
+			this._throwTypeException()
+		}
+		if (param_precision == 0) {
+			return ceil(param_number)
+		}
+		l_offset := 0.5 / (10 ** param_precision)
+		if (param_number < 0 && param_precision >= 1) {
+			l_offset /= 10
+		}
+		l_sum := (param_precision >= 1)
+			? format("{:." max(strLen(subStr(param_number, inStr(param_number, ".") + 1))) + 1 "f}", param_number + l_offset)
+			: param_number + l_offset
+		l_sum := trim(l_sum, "0")
+		l_value := (subStr(l_sum, 0) = "5" && param_number != l_sum) ? subStr(l_sum, 1, -1) : l_sum
+		return round(l_value, param_precision)
+	}
+	static divide(param_dividend,param_divisor) {
+		if (!this.isNumber(param_dividend) || !this.isNumber(param_divisor)) {
+			this._throwTypeException()
+		}
+		if (param_divisor == 0) {
+			return ""
+		}
+		return param_dividend / param_divisor
+	}
+	static floor(param_number,param_precision:=0) {
+		if (!this.isNumber(param_number) || !this.isNumber(param_precision)) {
+			this._throwTypeException()
+		}
+		if (param_precision == 0) { ; regular floor
+			return floor(param_number)
+		}
+		l_offset := -0.5 / (10**param_precision)
+		if (param_number < 0 && param_precision >= 1) {
+			l_offset /= 10 ; adjust offset for negative numbers and positive param_precision
+		}
+		if (param_precision >= 1) {
+			l_decChar := strLen( substr(param_number, inStr(param_number, ".") + 1) ) ; count the number of decimal characters
+			l_sum := format("{:." this.max([l_decChar, param_precision]) + 1 "f}", param_number + l_offset)
+		} else {
+			l_sum := param_number + l_offset
+		}
+		l_sum := trim(l_sum, "0") ; trim zeroes
+		l_value := (subStr(l_sum, 0) = "5") && param_number != l_sum ? subStr(l_sum, 1, -1) : l_sum ; if last char is 5 then remove it unless it is part of the original string
+		return round(l_value, param_precision)
+	}
+	static max(param_array) {
+		if (!isObject(param_array)) {
+			this._throwTypeException()
+		}
+		if (this.size(param_array) == 0 || !this.isArray(param_array)) {
+			return ""
+		}
+		return max(param_array*)
+	}
+	static mean(param_array) {
+		if (!isObject(param_array)) {
+			this._throwTypeException()
+		}
+		return this.sum(param_array) / this.size(param_array)
+	}
+	static min(paramArray) {
+		if (!this.isArray(paramArray)) {
+			this._throwTypeException()
+		}
+		if (paramArray.length == 0) {
+			return ""
+		}
+		for key, value in paramArray {
+			if (isSet(value) && value != "") {
+				l_min := value
+				break
+			}
+		}
+		if (!isSet(l_min)) {
+			return ""
+		}
+		for key, value in paramArray {
+			if (isSet(value) && value != "" && value < l_min) {
+				l_min := value
+			}
+		}
+		return l_min
+	}
+	static multiply(param_multiplier,param_multiplicand) {
+		if (!this.isNumber(param_multiplier) || !this.isNumber(param_multiplicand)) {
+			this._throwTypeException()
+		}
+		return param_multiplier * param_multiplicand
+	}
+	static round(param_number,param_precision:=0) {
+		if (!this.isNumber(param_number) || !this.isNumber(param_precision)) {
+			this._throwTypeException()
+		}
+		return round(param_number, param_precision)
+	}
+	static subtract(param_minuend,param_subtrahend) {
+		if (!this.isNumber(param_minuend) || !this.isNumber(param_subtrahend)) {
+			this._throwTypeException()
+		}
+		return param_minuend - param_subtrahend
+	}
+	static sum(param_array) {
+		if (!isObject(param_array)) {
+			this._throwTypeException()
+		}
+		vSum := 0
+		if (param_array.hasProp("__Item")) {
+			for key, value in param_array {
+				if (isSet(value)) {
+					vSum += value
+				}
+			}
+		}
+		return vSum
+	}
 	static clamp(param_number,param_lower,param_upper) {
 		if (!this.isNumber(param_number) || !this.isNumber(param_lower) || !this.isNumber(param_upper)) {
 			this._throwTypeException()
@@ -848,6 +1044,10 @@ class adash {
 		return param_number
 	}
 	static random(param_lower:=0,param_upper:=1,param_floating:=false) {
+		if (param_lower == true && param_upper == 1 && param_floating == false) {
+			param_lower := 0
+			param_floating := true
+		}
 		if (param_lower > param_upper) {
 			l_temp := param_lower
 			param_lower := param_upper
@@ -1115,7 +1315,7 @@ class adash {
 		}
 		localString := param_string
 		localArray := []
-		while (regExMatch(localString, param_pattern, &reMatch)) {
+		while (regexMatch(localString, param_pattern, &reMatch)) {
 			localArray.push(reMatch[0])
 			localString := subStr(localString, reMatch.pos + reMatch.len)
 		}
@@ -1137,7 +1337,7 @@ class adash {
 	}
 	static _throwTypeException() {
 		if (this.throwExceptions == true) {
-			throw ValueError("Type Error", -2)
+			throw valueError("Type Error", -2)
 		}
 	}
 }
