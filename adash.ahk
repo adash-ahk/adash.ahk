@@ -941,13 +941,24 @@ class adash {
 		return round(l_value, param_precision)
 	}
 	static max(param_array) {
-		if (!isObject(param_array)) {
-			this._throwTypeException()
+		if (!this.isArray(param_array)) {
+			this._throwTypeException("Array", param_array)
 		}
-		if (this.size(param_array) == 0 || !this.isArray(param_array)) {
+		l_array := []
+		for key, value in param_array {
+			if (!isSet(value)) {
+				continue
+			}
+			switch (value) {
+				case "":
+					continue
+			}
+			l_array.push(value)
+		}
+		if (l_array.length == 0) {
 			return ""
 		}
-		return max(param_array*)
+		return max(l_array*)
 	}
 	static mean(param_array) {
 		if (!isObject(param_array)) {
@@ -955,28 +966,25 @@ class adash {
 		}
 		return this.sum(param_array) / this.size(param_array)
 	}
-	static min(paramArray) {
-		if (!this.isArray(paramArray)) {
-			this._throwTypeException()
+	static min(param_array) {
+		if (!this.isArray(param_array)) {
+			this._throwTypeException("Array", param_array)
 		}
-		if (paramArray.length == 0) {
+		l_array := []
+		for key, value in param_array {
+			if (!isSet(value)) {
+				continue
+			}
+			switch (value) {
+				case "":
+					continue
+			}
+			l_array.push(value)
+		}
+		if (l_array.length == 0) {
 			return ""
 		}
-		for key, value in paramArray {
-			if (isSet(value) && value != "") {
-				l_min := value
-				break
-			}
-		}
-		if (!isSet(l_min)) {
-			return ""
-		}
-		for key, value in paramArray {
-			if (isSet(value) && value != "" && value < l_min) {
-				l_min := value
-			}
-		}
-		return l_min
+		return min(l_array*)
 	}
 	static multiply(param_multiplier,param_multiplicand) {
 		if (!this.isNumber(param_multiplier) || !this.isNumber(param_multiplicand)) {
