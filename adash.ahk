@@ -652,6 +652,26 @@ class adash {
 		}
 		return ""
 	}
+	static some(param_collection,param_predicate:="__identity") {
+		if (!this.isArray(param_collection) && !this.isObject(param_collection)) {
+			this._throwTypeException("Array|Object", param_collection)
+		}
+		switch (type(param_collection)) {
+			case "Object":
+				for key, value in param_collection.ownProps() {
+					if (this._applyPredicate(param_collection, key, value, param_predicate) == true) {
+						return true
+					}
+				}
+			default:
+				for key, value in param_collection {
+					if (this._applyPredicate(param_collection, key, value, param_predicate) == true) {
+						return true
+					}
+				}
+		}
+		return false
+	}
 	static _applyPredicate(param_collection,param_key,param_value,param_predicate) {
 		if (param_predicate == "__identity") {
 			param_predicate := this.identity
