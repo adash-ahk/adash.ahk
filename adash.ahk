@@ -48,8 +48,14 @@ class adash {
 		}
 		l_array := []
 		for key, value in param_array {
-			if (value == "" || value == 0) {
+			if (!isSet(value)) {
 				continue
+			}
+			switch (value) {
+				case false:
+					continue
+				case "":
+					continue
 			}
 			l_array.push(value)
 		}
