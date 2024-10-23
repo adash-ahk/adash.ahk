@@ -714,6 +714,19 @@ class adash {
 		}
 		return format("{:08X}", hash & 0xFFFFFFFF)
 	}
+	static _isFalsey(param_value?) {
+		if (isSet(param_value)) {
+			switch (param_value) {
+				case "":
+					return true
+				case false:
+					return true
+			}
+		} else {
+			return true
+		}
+		return false
+	}
 	static _stringify(param_value?) {
 		if (!IsSet(param_value)) {
 			return "unset"
