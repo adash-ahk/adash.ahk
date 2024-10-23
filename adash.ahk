@@ -795,27 +795,9 @@ class adash {
 		}
 		return false
 	}
-	static isArray(param) {
-		if (type(param) == "Array") {
-			return true
-		}
-		return false
-	}
-	static isBoolean(param) {
-		if (param == 1) {
-			return true
-		}
-		if (param == 0) {
-			return true
-		}
-		return false
-	}
-	static isBuffer(param_value) {
-		if (type(param_value) == "Buffer") {
-			return true
-		}
-		return false
-	}
+	static isArray(param) => (type(param) == "Array")
+	static isBoolean(param) => (this.includes([true, false], param))
+	static isBuffer(param_value) => (type(param_value) == "Buffer")
 	static isEqual(param_value,param_other*) {
 		if (isObject(param_value)) {
 			l_array := this.map(param_other, this._stringify)
@@ -842,24 +824,9 @@ class adash {
 		}
 		return true
 	}
-	static isFloat(param) {
-		if(type(param) == "Float") {
-			return true
-		}
-		return false
-	}
-	static isFunction(param) {
-		if (this.includes(["BoundFunc", "Func"], type(param))) {
-			return true
-		}
-		return false
-	}
-	static isInteger(param) {
-		if(type(param) == "Integer") {
-			return true
-		}
-		return false
-	}
+	static isFloat(param) => (type(param) == "Float")
+	static isFunction(param) => (this.includes(["BoundFunc", "Func", "Closure"], type(param)))
+	static isInteger(param) => (type(param) == "Integer")
 	static isMatch(param_object,param_source) {
 		if (param_source.hasProp("__Item")) {
 			for key, value in param_source {
@@ -883,19 +850,9 @@ class adash {
 		}
 		return true
 	}
-	static isNumber(param) {
-		if (isNumber(param)) {
-			return true
-		}
-		return false
-	}
+	static isNumber(param) => isNumber(param)
 	static isObject(param) => isObject(param)
-	static isString(param) {
-		if (type(param) == "String") {
-			return true
-		}
-		return false
-	}
+	static isString(param) => (type(param) == "String")
 	static isUndefined(param_value) {
 		if (!isSet(param_value)) {
 			return true
@@ -909,9 +866,7 @@ class adash {
 			return "" param_value
 		}
 	}
-	static typeOf(param_value?) {
-		return this.toLower(type(param_value))
-	}
+	static typeOf(param_value?) => this.toLower(type(param_value))
 	static add(param_augend,param_addend) {
 		if (!this.isNumber(param_augend) || !this.isNumber(param_addend)) {
 			this._throwTypeException()
