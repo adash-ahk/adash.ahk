@@ -1016,6 +1016,24 @@ class adash {
 		}
 		return param_number
 	}
+	static inRange(param_number,param_start:=0,param_end:="") {
+		if (!this.isNumber(param_number) || !this.isNumber(param_start)) {
+			this._internal_ThrowException()
+		}
+		if (param_end == "") {
+			param_end := param_start
+			param_start := 0
+		}
+		if (param_start > param_end) {
+			l_temp := param_start
+			param_start := param_end
+			param_end := l_temp
+		}
+		if (param_number >= param_start && param_number < param_end) {
+			return true
+		}
+		return false
+	}
 	static random(param_lower:=0,param_upper:=1,param_floating:=false) {
 		if (param_lower == true && param_upper == 1 && param_floating == false) {
 			param_lower := 0
