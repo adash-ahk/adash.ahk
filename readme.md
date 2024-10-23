@@ -436,23 +436,6 @@ _.intersection([2, 1], [2, 3])
 
 
 
-## .join
-Converts all elements in array into a string separated by separator.
-
-
-#### Arguments
-array (Array): The array to convert.
-
-[separator:=","] (string): The element separator.
-
-
-#### Returns
-(string): Returns the joined string.
-
-
-#### Example
-
-```autohotkey
 _.join(["a", "b", "c"], "~")
 ; => "a~b~c"
 
@@ -495,7 +478,7 @@ _.last(100)
 
 
 ## .lastIndexOf
-This method is like [_.indexOf](#indexof) except that it iterates over elements of array from right to left.
+This method is like [_.indexOf](/?id=indexof) except that it iterates over elements of array from right to left.
 
 
 #### Arguments
@@ -664,7 +647,7 @@ _.sortedIndex([30, 50], 99)
 
 
 ## .sortedUniq
-This method is like [_.uniq](#uniq) except that it's optimized for sorted arrays.
+This method is like [_.uniq](/?id=uniq) except that it's optimized for sorted arrays.
 
 
 #### Arguments
@@ -880,7 +863,7 @@ _.zip(["a", "b"], [1, 2], [true, true])
 
 
 ## .zipObject
-This method is like [_.fromPairs](#frompairs) except that it accepts two arrays, one of property identifiers and one of corresponding values.
+This method is like [_.fromPairs](/?id=frompairs) except that it accepts two arrays, one of property identifiers and one of corresponding values.
 
 
 #### Arguments
@@ -1032,6 +1015,30 @@ _.size("trinity")
 
 
 
+## .some
+Checks if `predicate` returns truthy for **any** element of `collection`. Iteration is stopped once `predicate` returns truthy. The predicate is invoked with three arguments: (value, index|key, collection).
+
+
+#### Arguments
+collection (Array|Object): The collection to iterate over.
+
+[iteratees:=.identity] (Function): The function invoked per iteration.
+
+
+#### Returns
+(Array): Returns true if any element passes the predicate check, else false.
+
+
+#### Example
+
+```autohotkey
+_.some(["foo", "bar", 42], _.isNumber)
+; => true
+
+```
+
+
+
 
 # **Lang methods**
 ## .clone
@@ -1058,7 +1065,7 @@ _.isEqual(objects, shallow)
 
 
 ## .cloneDeep
-This method is like [_.clone](#clone) except that it recursively clones value.
+This method is like [_.clone](/?id=clone) except that it recursively clones value.
 
 
 #### Arguments
@@ -1250,11 +1257,6 @@ value (*): The value to check.
 _.isFloat(1.0)
 ; => true
 
-_.isFloat(1)
-; => false
-
-```
-
 
 
 ## .isFunction
@@ -1301,6 +1303,9 @@ value (*): The value to check.
 #### Example
 
 ```autohotkey
+_.isInteger(1)
+; => true
+
 _.isInteger("1")
 ; => false
 
@@ -1311,7 +1316,7 @@ _.isInteger("1")
 ## .isMatch
 Performs a partial deep comparison between object and source to determine if object contains equivalent property values.
 
-Partial comparisons will match empty array and empty object source values against any array or object value, respectively. See [_.isEqual](#isEqual) for a list of supported value comparisons.
+Partial comparisons will match empty array and empty object source values against any array or object value, respectively. See [_.isEqual](/?id=isEqual) for a list of supported value comparisons.
 
 
 #### Arguments
@@ -1614,6 +1619,9 @@ number (number): The number to round down.
 #### Returns
 (number): Returns the rounded down number.
 
+#### Example
+
+```autohotkey
 _.floor(4.006)
 ; => 4
 
@@ -1649,8 +1657,6 @@ _.max([])
 ; => ""
 
 ```
-
-
 
 ## .mean
 Computes the mean of the values in `array`.
@@ -1825,6 +1831,50 @@ _.clamp(-10, -5, 5)
 
 _.clamp(10, -5, 5)
 ; => 5
+
+```
+
+
+
+## .inRange
+Checks if `n` is between `start` and up to, but not including, `end`. If end is not specified, it's set to start with start then set to 0. If start is greater than end the params are swapped to support negative ranges.
+
+
+#### Arguments
+number (number): The number to check.
+
+start (number): The start of the range.
+
+end (number): The end of the range.
+
+
+#### Returns
+(boolean): Returns true if number is in the range, else false.
+
+
+#### Example
+
+```autohotkey
+_.inRange(3, 2, 4)
+; => true
+
+_.inRange(4, 8)
+; => true
+
+_.inRange(4, 2)
+; => false
+
+_.inRange(2, 2)
+; => false
+
+_.inRange(1.2, 2)
+; => true
+
+_.inRange(5.2, 4)
+; => false
+
+_.inRange(-3, -2, -6)
+; => true
 
 ```
 
@@ -2051,19 +2101,6 @@ string (string): The string to convert.
 #### Returns
 
 (number): Returns the converted integer.
-
-
-#### Example
-
-```autohotkey
-_.parseInt("08")
-; => 8
-
-_.map(["6", "08", "10"], _.parseInt)
-; => [6, 8, 10]
-
-```
-
 
 
 ## .repeat
@@ -2403,41 +2440,6 @@ _.identity(obj)
 ; => {a: 1}
 
 assert.true(_.identity(obj) == obj)
-```
-
-
-
-
-# **Array methods**
-## .first
-Gets the first element of array.
-
-#### Aliases
-`.first`
-
-#### Arguments
-array (Array): The array to query.
-
-
-#### Returns
-(*): Returns the first element of array.
-
-
-#### Example
-
-```autohotkey
-_.head([1, 2, 3])
-; => 1
-
-_.head([])
-; => ""
-
-_.head("neo")
-; => "n"
-
-_.head(100)
-; => "1"
-
 ```
 
 
