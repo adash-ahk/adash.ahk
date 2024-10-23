@@ -1294,9 +1294,7 @@ class adash {
 		}
 		return localArray
 	}
-	static identity(param_value) {
-		return param_value
-	}
+	static identity(param_value) => param_value
 	static first(param) {
 		if (this.isObject(param) && param.hasProp("__Item")) {
 			return (param.length > 0) ? param[1] : ""
