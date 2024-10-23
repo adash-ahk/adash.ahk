@@ -1330,9 +1330,9 @@ class adash {
 			return subStr(param, 1, 1)
 		}
 	}
-	static _throwTypeException() {
+	static _throwTypeException(param_expectedType:="",param_received:="") {
 		if (this.throwExceptions == true) {
-			throw valueError("Type Error", -2)
+			throw valueError("Type Error", -2, "Expected " param_expectedType " but received " type(param_received))
 		}
 	}
 }
