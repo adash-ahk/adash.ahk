@@ -2,7 +2,6 @@ class adash {
 	; --- Static Variables ---
 	static stringCaseSense := false
 	static throwExceptions := true
-	static limit := -1
 	; --- Guarded Methods ---
 	static _guarded := map(this.prototype.__class ".trim", { maxParams: 1, type: "self" }
 		, this.prototype.__class ".trimEnd", { maxParams: 1, type: "self" }
@@ -21,8 +20,8 @@ class adash {
 		, "RTrim", { maxParams: 1, type: "function" })
 	; --- Static Methods ---
 	static chunk(param_array,param_size:=1) {
-		if ((!isObject(param_array) && !this.isString(param_array)) || !this.isNumber(param_size)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array", "string"], param_size, ["integer"])
 		}
 		l_array := []
 		if (this.isString(param_array)) {
@@ -43,8 +42,8 @@ class adash {
 		return l_array
 	}
 	static compact(param_array) {
-		if (!isObject(param_array)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"])
 		}
 		l_array := []
 		for key, value in param_array {
@@ -61,18 +60,18 @@ class adash {
 		}
 		return l_array
 	}
-	static depthOf(param, param_depth := 1) {
-		if (!isObject(param)) {
-			this._throwTypeException()
+	static depthOf(param_array,param_depth:=1) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"], param_depth, ["integer"])
 		}
-		if (param.hasProp("__Item")) {
-			for key, value in param {
+		if (param_array.hasProp("__Item")) {
+			for key, value in param_array {
 				if (isObject(value)) {
 					param_depth := this.depthOf(value, param_depth + 1)
 				}
 			}
 		} else {
-			for key, value in param.ownProps() {
+			for key, value in param_array.ownProps() {
 				if (isObject(value)) {
 					param_depth := this.depthOf(value, param_depth + 1)
 				}
@@ -81,8 +80,8 @@ class adash {
 		return param_depth
 	}
 	static difference(param_array,param_values*) {
-		if (!isObject(param_array)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"])
 		}
 		l_array := this.clone(param_array)
 		for key, value in param_values {
@@ -94,9 +93,8 @@ class adash {
 		}
 		return l_array
 	}
-	static drop(param_array,param_n:= 1) {
-		if (!this.isNumber(param_n)) {
-			this._throwTypeException()
+	static drop(param_array,param_n:=1) {
+		if (this.throwExceptions) {
 		}
 		switch (type(param_array)) {
 			case "Array":
@@ -115,8 +113,8 @@ class adash {
 		return l_array
 	}
 	static dropRight(param_array,param_n:=1) {
-		if (!this.isNumber(param_n)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array", "string", "integer"], param_n, ["integer"])
 		}
 		if (isObject(param_array)) {
 			l_array := param_array.clone()
@@ -136,8 +134,9 @@ class adash {
 		return l_array
 	}
 	static fill(param_array,param_value:="",param_start:=1,param_end:=-1) {
-		if (!isObject(param_array)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"], param_start, ["integer"]
+				, param_end, ["integer"])
 		}
 		if (param_end == -1) {
 			param_end := this.size(param_array)
@@ -150,8 +149,8 @@ class adash {
 		return param_array
 	}
 	static flatten(param_array) {
-		if (!isObject(param_array)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"])
 		}
 		l_obj := []
 		for index, obj in param_array {
@@ -166,8 +165,8 @@ class adash {
 		return l_obj
 	}
 	static flattenDeep(param_array) {
-		if (!isObject(param_array)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array", "object"])
 		}
 		flattenedArray := []
 		if (param_array.hasProp("__Item")) {
@@ -190,8 +189,8 @@ class adash {
 		return flattenedArray
 	}
 	static flattenDepth(param_array,param_depth:=1) {
-		if (!isObject(param_array)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"], param_depth, ["integer"])
 		}
 		l_obj := this.cloneDeep(param_array)
 		loop (param_depth) {
@@ -200,8 +199,8 @@ class adash {
 		return l_obj
 	}
 	static fromPairs(param_pairs) {
-		if (!isObject(param_pairs)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_pairs, ["array"])
 		}
 		l_obj := {}
 		for key, value in param_pairs {
@@ -220,9 +219,9 @@ class adash {
 			return subStr(param, 1, 1)
 		}
 	}
-	static indexOf(param_array,param_value,fromIndex:=1) {
-		if (!isObject(param_array) && !this.isString(param_array)) {
-			this._throwTypeException()
+	static indexOf(param_array,param_value,param_fromIndex:=1) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array", "string", "object"], param_fromIndex, ["integer"])
 		}
 		switch (type(param_value)) {
 			case "Array":
@@ -235,7 +234,7 @@ class adash {
 		}
 		if (param_array.hasProp("__Item")) {
 			for key, value in param_array {
-				if (A_Index < fromIndex) {
+				if (A_Index < param_fromIndex) {
 					continue
 				}
 				if (isObject(value) && isObject(param_value)) {
@@ -248,7 +247,7 @@ class adash {
 			}
 		} else {
 			for key, value in param_array.ownProps() {
-				if (A_Index < fromIndex) {
+				if (A_Index < param_fromIndex) {
 					continue
 				}
 				if (isObject(value) && isObject(param_value)) {
@@ -263,6 +262,9 @@ class adash {
 		return -1
 	}
 	static initial(param_array) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array", "string", "integer"])
+		}
 		if (isObject(param_array)) {
 			l_array := this.clone(param_array)
 		} else {
@@ -274,9 +276,6 @@ class adash {
 		return this.dropRight(l_array)
 	}
 	static intersection(param_arrays*) {
-		if (!isObject(param_arrays[1])) {
-			this._throwTypeException()
-		}
 		tempArray := this.cloneDeep(param_arrays[1])
 		param_arrays.removeAt(1)
 		l_array := []
@@ -296,8 +295,11 @@ class adash {
 		return l_array
 	}
 	static join(param_array,param_separator:=",") {
-		if (!isObject(param_array) || isObject(param_separator)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array", "object", "string"], param_separator, ["string"])
+		}
+		if (this.isString(param_array)) {
+			param_array := strSplit(param_array)
 		}
 		output := ""
 		if (param_array.hasProp("__Item")) {
@@ -321,24 +323,24 @@ class adash {
 		return param_array[param_array.length]
 	}
 	static lastIndexOf(param_array,param_value,param_fromIndex:=0) {
-		if (param_fromIndex == 0) {
-			param_fromIndex := param_array.length
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"], param_fromIndex, ["integer"])
 		}
-		for index, value in param_array {
+		if (param_fromIndex == 0 || param_fromIndex > param_array.length - 1) {
+			param_fromIndex := param_array.length - 1
+		}
+		index := param_fromIndex
+		while (index >= 0) {
+			if (this.isEqual(param_array[index + 1], param_value)) {
+				return index + 1
+			}
 			index -= 1
-			l_negativeIndex := param_array.length - index
-			if (l_negativeIndex > param_fromIndex) {
-				continue
-			}
-			if (this.isEqual(param_array[l_negativeIndex], param_value)) {
-				return l_negativeIndex
-			}
 		}
 		return -1
 	}
 	static nth(param_array,param_n:=1) {
-		if (!this.isNumber(param_n)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array", "string", "integer"], param_n, ["integer"])
 		}
 		if (isObject(param_array)) {
 			l_array := this.clone(param_array)
@@ -361,11 +363,11 @@ class adash {
 		param_n := 0 - param_n
 		return this.nth(l_array, param_n)
 	}
-	static reverse(param_collection) {
-		if (!isObject(param_collection)) {
-			this._throwTypeException()
+	static reverse(param_array) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"])
 		}
-		l_collection := this.cloneDeep(param_collection)
+		l_collection := this.cloneDeep(param_array)
 		l_array := []
 		while (l_collection.length != 0) {
 			l_array.push(l_collection.pop())
@@ -373,11 +375,9 @@ class adash {
 		return l_array
 	}
 	static slice(param_array,param_start:=1,param_end:=0) {
-		if (!this.isNumber(param_start)) {
-			this._throwTypeException()
-		}
-		if (!this.isNumber(param_end)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array", "string", "integer"], param_start, ["integer"]
+				, param_end, ["integer"])
 		}
 		if (!isObject(param_array)) {
 			param_array := strSplit(param_array)
@@ -393,7 +393,10 @@ class adash {
 		}
 		return l_array
 	}
-	static sortedIndex(param_array, param_value) {
+	static sortedIndex(param_array,param_value) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"])
+		}
 		if (param_value < param_array[1]) {
 			return 1
 		}
@@ -404,14 +407,14 @@ class adash {
 		}
 		return param_array.length + 1
 	}
-	static sortedUniq(param_collection) {
-		if (!isObject(param_collection)) {
-			this._throwTypeException()
+	static sortedUniq(param_array) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"])
 		}
 		l_array := []
 		l_temp := ""
-		for key, value in param_collection {
-			printedelement := this._stringify(param_collection[key])
+		for key, value in param_array {
+			printedelement := this._stringify(param_array[key])
 			if (!this.isEqual(l_temp, printedelement)) {
 				l_temp := printedelement
 				l_array.push(value)
@@ -420,11 +423,14 @@ class adash {
 		return l_array
 	}
 	static tail(param_array) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array", "string", "integer"])
+		}
 		return this.drop(param_array)
 	}
 	static take(param_array,param_n:=1) {
-		if (!this.isNumber(param_n)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array", "string", "integer"], param_n, ["integer"])
 		}
 		if (this.isString(param_array) || this.isNumber(param_array)) {
 			l_array := []
@@ -449,9 +455,9 @@ class adash {
 		}
 		return l_array
 	}
-	static takeRight(param_array, param_n:=1) {
-		if (!this.isNumber(param_n)) {
-			this._throwTypeException()
+	static takeRight(param_array,param_n:=1) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array", "string", "integer"], param_n, ["integer"])
 		}
 		if (isObject(param_array)) {
 			param_array := this.clone(param_array)
@@ -472,9 +478,9 @@ class adash {
 		}
 		return this.reverse(l_array)
 	}
-	static union(arrays*) {
+	static union(param_arrays*) {
 		combinedArray := []
-		for each, value in arrays {
+		for each, value in param_arrays {
 			if (isObject(value)) {
 				for key, value2 in value {
 					combinedArray.push(value2)
@@ -486,8 +492,13 @@ class adash {
 		return this.uniq(combinedArray)
 	}
 	static uniq(param_collection) {
-		if (!isObject(param_collection)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_collection, ["array", "string", "integer"])
+		}
+		switch (type(param_collection)) {
+			case "Array":
+			default:
+				param_collection := strSplit(param_collection)
 		}
 		tempArray := []
 		l_array := []
@@ -500,9 +511,27 @@ class adash {
 		}
 		return l_array
 	}
+	static unzip(param_array) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"])
+		}
+		l_array := []
+		group_count := param_array[1].length
+		loop (group_count) {
+			l_array.push([])
+		}
+		for index, subarray in param_array {
+			for key, value in subarray {
+				if (l_array.has(key)) {
+					l_array[key].push(value)
+				}
+			}
+		}
+		return l_array
+	}
 	static without(param_array,param_values*) {
-		if (!isObject(param_array)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"])
 		}
 		l_array := this.clone(param_array)
 		for i, val in param_values {
@@ -513,9 +542,6 @@ class adash {
 		return l_array
 	}
 	static zip(param_arrays*) {
-		if (!isObject(param_arrays)) {
-			this._throwTypeException()
-		}
 		l_array := []
 		shortestLength := 9223372036854775807
 		for key, arr in param_arrays {
@@ -539,6 +565,9 @@ class adash {
 		return l_array
 	}
 	static zipObject(param_props,param_values) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_props, ["array"], param_values, ["array"])
+		}
 		if (!isObject(param_props)) {
 			param_props := []
 		}
@@ -556,9 +585,6 @@ class adash {
 		return l_obj
 	}
 	static includes(param_collection,param_value,param_fromIndex:=1) {
-		if (!this.isNumber(param_fromIndex)) {
-			this._throwTypeException()
-		}
 		if (isObject(param_value)) {
 			param_value := this._hash(param_value)
 			param_collection := this.map(param_collection, this._hash)
@@ -582,8 +608,8 @@ class adash {
 		}
 	}
 	static map(param_collection,param_iteratee:="__identity") {
-		if (!isObject(param_collection) && !this.isString(param_collection)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_collection, ["array", "string", "object"], param_iteratee, ["string", "func"])
 		}
 		if (this.isString(param_collection)) {
 			l_collection := strSplit(param_collection)
@@ -605,8 +631,8 @@ class adash {
 		return l_array
 	}
 	static sample(param_collection) {
-		if (!this.isString(param_collection) && !isObject(param_collection)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_collection, ["array", "string"])
 		}
 		if (this.isString(param_collection)) {
 			param_collection := strSplit(param_collection)
@@ -618,8 +644,8 @@ class adash {
 		return l_array[this.random(1, l_array.length)]
 	}
 	static shuffle(param_collection) {
-		if (!isObject(param_collection)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_collection, ["array", "object"])
 		}
 		switch (type(param_collection)) {
 			case "Array":
@@ -645,16 +671,21 @@ class adash {
 				return objOwnPropCount(param_collection)
 			case "string":
 				return strLen(param_collection)
-			case "map":
-				return param_collection.count
+			case "float":
+				return 0
+			case "integer":
+				return 0
 			default:
+				if (param_collection.hasProp("Count")) {
+					return param_collection.count
+				}
 				return 0
 		}
 		return ""
 	}
 	static some(param_collection,param_predicate:="__identity") {
-		if (!this.isArray(param_collection) && !this.isObject(param_collection)) {
-			this._throwTypeException("Array|Object", param_collection)
+		if (this.throwExceptions) {
+			this._validateTypes(param_collection, ["array", "object"], param_predicate, ["string", "func"])
 		}
 		switch (type(param_collection)) {
 			case "Object":
@@ -798,8 +829,39 @@ class adash {
 				return (paramValueType = "object") ? "{" outValue "}" : (paramValueType = "Array") ? "[" outValue "]" : paramValueType "(" outValue ")"
 		}
 	}
+	static _validateTypes(param_input*) {
+		for key, value in param_input {
+			if (mod(key, 2) != 0) {
+				valid_types := param_input[key + 1]
+				current_type := strLower(type(value))
+				is_valid := false
+				for key, type_check in valid_types {
+					if (this.isString(type_check) && current_type = type_check) {
+						is_valid := true
+						break
+					} else if (this.isFunction(type_check)) {
+						if (this.includes(type_check.name, this.prototype.__class ".")) {
+							if (type_check(this, value)) {
+								is_valid := true
+								break
+							}
+							continue
+						}
+						if (type_check(value)) {
+							is_valid := true
+							break
+						}
+						break
+					}
+				}
+				if (!is_valid) {
+					this._throwTypeException(value, valid_types)
+				}
+			}
+		}
+	}
 	static clone(param_value) {
-		if (IsObject(param_value)) {
+		if (isObject(param_value)) {
 			newObj := param_value.clone()
 			for key, value in param_value {
 				newObj[key] := value
@@ -837,6 +899,21 @@ class adash {
 	static isArray(param) => (type(param) == "Array")
 	static isBoolean(param) => (this.includes([true, false], param))
 	static isBuffer(param_value) => (type(param_value) == "Buffer")
+	static isEmpty(param_value) {
+		if (isSet(param_value)) {
+			switch (type(param_value)) {
+				case "Array":
+					return (param_value.length == 0)
+				case "Object":
+					return (ObjGetCapacity(param_value) == 0)
+				case "Map":
+					return (param_value.count == 0)
+				default:
+					return false
+			}
+		}
+		return false
+	}
 	static isEqual(param_value,param_other*) {
 		if (isObject(param_value)) {
 			l_array := this.map(param_other, this._stringify)
@@ -866,6 +943,7 @@ class adash {
 	static isFloat(param) => (type(param) == "Float")
 	static isFunction(param) => (this.includes(["BoundFunc", "Func", "Closure"], type(param)))
 	static isInteger(param) => (type(param) == "Integer")
+	static isMap(param_value?) => (type(param_value) == "Map")
 	static isMatch(param_object,param_source) {
 		if (param_source.hasProp("__Item")) {
 			for key, value in param_source {
@@ -892,12 +970,7 @@ class adash {
 	static isNumber(param) => isNumber(param)
 	static isObject(param) => isObject(param)
 	static isString(param) => (type(param) == "String")
-	static isUndefined(param_value) {
-		if (!isSet(param_value)) {
-			return true
-		}
-		return false
-	}
+	static isUndefined(param_value) => (!isSet(param_value))
 	static toString(param_value) {
 		if (isObject(param_value)) {
 			return this.join(param_value, ",")
@@ -907,14 +980,14 @@ class adash {
 	}
 	static typeOf(param_value?) => this.toLower(type(param_value))
 	static add(param_augend,param_addend) {
-		if (!this.isNumber(param_augend) || !this.isNumber(param_addend)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_augend, [isNumber], param_addend, [isNumber])
 		}
 		return param_augend + param_addend
 	}
-	static ceil(param_number, param_precision := 0) {
-		if (!this.isNumber(param_number) || !this.isNumber(param_precision)) {
-			this._throwTypeException()
+	static ceil(param_number,param_precision:=0) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_number, [isNumber], param_precision, [isNumber])
 		}
 		if (param_precision == 0) {
 			return ceil(param_number)
@@ -931,8 +1004,8 @@ class adash {
 		return round(l_value, param_precision)
 	}
 	static divide(param_dividend,param_divisor) {
-		if (!this.isNumber(param_dividend) || !this.isNumber(param_divisor)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_dividend, [IsNumber], param_divisor, [isNumber])
 		}
 		if (param_divisor == 0) {
 			return ""
@@ -940,29 +1013,29 @@ class adash {
 		return param_dividend / param_divisor
 	}
 	static floor(param_number,param_precision:=0) {
-		if (!this.isNumber(param_number) || !this.isNumber(param_precision)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_number, [isNumber], param_precision, [isNumber])
 		}
-		if (param_precision == 0) { ; regular floor
+		if (param_precision == 0) {
 			return floor(param_number)
 		}
 		l_offset := -0.5 / (10**param_precision)
 		if (param_number < 0 && param_precision >= 1) {
-			l_offset /= 10 ; adjust offset for negative numbers and positive param_precision
+			l_offset /= 10
 		}
 		if (param_precision >= 1) {
-			l_decChar := strLen( substr(param_number, inStr(param_number, ".") + 1) ) ; count the number of decimal characters
+			l_decChar := strLen( substr(param_number, inStr(param_number, ".") + 1) )
 			l_sum := format("{:." this.max([l_decChar, param_precision]) + 1 "f}", param_number + l_offset)
 		} else {
 			l_sum := param_number + l_offset
 		}
-		l_sum := trim(l_sum, "0") ; trim zeroes
-		l_value := (subStr(l_sum, 0) = "5") && param_number != l_sum ? subStr(l_sum, 1, -1) : l_sum ; if last char is 5 then remove it unless it is part of the original string
+		l_sum := trim(l_sum, "0")
+		l_value := (subStr(l_sum, 0) = "5") && param_number != l_sum ? subStr(l_sum, 1, -1) : l_sum
 		return round(l_value, param_precision)
 	}
 	static max(param_array) {
-		if (!this.isArray(param_array)) {
-			this._throwTypeException("Array", param_array)
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"])
 		}
 		l_array := []
 		for key, value in param_array {
@@ -981,14 +1054,14 @@ class adash {
 		return max(l_array*)
 	}
 	static mean(param_array) {
-		if (!isObject(param_array)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"])
 		}
 		return this.sum(param_array) / this.size(param_array)
 	}
 	static min(param_array) {
-		if (!this.isArray(param_array)) {
-			this._throwTypeException("Array", param_array)
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, ["array"])
 		}
 		l_array := []
 		for key, value in param_array {
@@ -1007,26 +1080,26 @@ class adash {
 		return min(l_array*)
 	}
 	static multiply(param_multiplier,param_multiplicand) {
-		if (!this.isNumber(param_multiplier) || !this.isNumber(param_multiplicand)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_multiplier, [isNumber], param_multiplicand, [isNumber])
 		}
 		return param_multiplier * param_multiplicand
 	}
 	static round(param_number,param_precision:=0) {
-		if (!this.isNumber(param_number) || !this.isNumber(param_precision)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_number, [isNumber], param_precision, [isNumber])
 		}
 		return round(param_number, param_precision)
 	}
 	static subtract(param_minuend,param_subtrahend) {
-		if (!this.isNumber(param_minuend) || !this.isNumber(param_subtrahend)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_minuend, [isNumber], param_subtrahend, [isNumber])
 		}
 		return param_minuend - param_subtrahend
 	}
 	static sum(param_array) {
-		if (!isObject(param_array)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_array, [isObject])
 		}
 		vSum := 0
 		if (param_array.hasProp("__Item")) {
@@ -1039,8 +1112,9 @@ class adash {
 		return vSum
 	}
 	static clamp(param_number,param_lower,param_upper) {
-		if (!this.isNumber(param_number) || !this.isNumber(param_lower) || !this.isNumber(param_upper)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_number, [isNumber], param_lower, [isNumber]
+				, param_upper, [isNumber])
 		}
 		if (param_number < param_lower) {
 			param_number := param_lower
@@ -1051,8 +1125,9 @@ class adash {
 		return param_number
 	}
 	static inRange(param_number,param_start:=0,param_end:="") {
-		if (!this.isNumber(param_number) || !this.isNumber(param_start)) {
-			this._internal_ThrowException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_number, [isNumber], param_start, [isNumber]
+				, param_end, ["string", isNumber])
 		}
 		if (param_end == "") {
 			param_end := param_start
@@ -1069,6 +1144,10 @@ class adash {
 		return false
 	}
 	static random(param_lower:=0,param_upper:=1,param_floating:=false) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_lower, [isNumber], param_upper, [isNumber]
+				, param_floating, [this.isBoolean])
+		}
 		if (param_lower == true && param_upper == 1 && param_floating == false) {
 			param_lower := 0
 			param_floating := true
@@ -1085,8 +1164,9 @@ class adash {
 		return random(param_lower, param_upper)
 	}
 	static endsWith(param_string,param_needle,param_fromIndex:=0) {
-		if (!this.isString(param_string) || !this.isString(param_needle) || !this.isNumber(param_fromIndex)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string"], param_needle, ["string"]
+				, param_fromIndex, [isNumber])
 		}
 		if (param_fromIndex == 0) {
 			param_fromIndex := strLen(param_string)
@@ -1101,8 +1181,8 @@ class adash {
 		return false
 	}
 	static escape(param_string:="") {
-		if (!this.isString(param_string)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string"])
 		}
 		HTMLmap := [["&","&amp;"], ["<","&lt;"], [">","&gt;"], ["`"","&quot;"], ["'","&#39;"]]
 		for key, value in HTMLmap {
@@ -1110,20 +1190,21 @@ class adash {
 		}
 		return param_string
 	}
-	static lowerFirst(paramString := "") {
-		if (!this.isString(paramString)) {
-			this._throwTypeException()
+	static lowerFirst(param_string := "") {
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string"])
 		}
-		if (paramString == "") {
+		if (param_string == "") {
 			return ""
 		}
-		firstChar := subStr(paramString, 1, 1)
-		restOfString := subStr(paramString, 2)
+		firstChar := subStr(param_string, 1, 1)
+		restOfString := subStr(param_string, 2)
 		return StrLower(firstChar) . restOfString
 	}
 	static pad(param_string:="",param_length:=0,param_chars:=" ") {
-		if (!this.isString(param_string) || !this.isNumber(param_length) || !this.isString(param_chars)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string"], param_length, [isNumber]
+				, param_chars, ["string"])
 		}
 		if (param_length <= strLen(param_string)) {
 			return param_string
@@ -1135,37 +1216,42 @@ class adash {
 		l_end := this.padEnd("", l_end, param_chars)
 		return l_start param_string l_end
 	}
-	static padEnd(paramString := "", paramLength := 0, paramChars := " ") {
-		if (!this.isString(paramString) || !this.isNumber(paramLength) || !this.isString(paramChars)) {
-			this._throwTypeException()
+	static padEnd(param_string:="",param_length:=0,param_chars:=" ") {
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string"], param_length, [isNumber]
+				, param_chars, ["string"])
 		}
-		stringLength := strLen(paramString)
-		if (paramLength <= stringLength) {
-			return paramString
+		stringLength := strLen(param_string)
+		if (param_length <= stringLength) {
+			return param_string
 		}
-		padLength := paramLength - stringLength
-		padChars := paramChars
+		padLength := param_length - stringLength
+		padChars := param_chars
 		while (strLen(padChars) < padLength) {
 			padChars .= padChars
 		}
-		return paramString . subStr(padChars, 1, padLength)
+		return param_string . subStr(padChars, 1, padLength)
 	}
-	static padStart(paramString := "", paramLength := 0, paramChars := " ") {
-		if (!this.isString(paramString) || !this.isNumber(paramLength) || !this.isString(paramChars)) {
-			this._throwTypeException()
+	static padStart(param_string:="",param_length:=0,param_chars:=" ") {
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string"], param_length, [isNumber]
+				, param_chars, ["string"])
 		}
-		stringLength := strLen(paramString)
-		if (paramLength <= stringLength) {
-			return paramString
+		stringLength := strLen(param_string)
+		if (param_length <= stringLength) {
+			return param_string
 		}
-		padLength := paramLength - stringLength
-		padChars := paramChars
+		padLength := param_length - stringLength
+		padChars := param_chars
 		while (strLen(padChars) < padLength) {
 			padChars .= padChars
 		}
-		return subStr(padChars, 1, padLength) . paramString
+		return subStr(padChars, 1, padLength) . param_string
 	}
 	static parseInt(param_string,param_radix:=0) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string", "integer"], param_radix, [isNumber])
+		}
 		inputString := "" param_string
 		inputString := this.trimStart(inputString, A_Tab A_Space)
 		sign := 1
@@ -1210,8 +1296,8 @@ class adash {
 		return sign * mathInt
 	}
 	static repeat(param_string,param_number:=1) {
-		if (!this.isString(param_string) || (!this.isNumber(param_number))) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string", "integer", "float"], param_number, [isNumber])
 		}
 		if (param_number <= 0) {
 			return ""
@@ -1219,8 +1305,9 @@ class adash {
 		return strReplace(format("{:0" param_number "}", 0), "0", param_string)
 	}
 	static startsWith(param_string,param_needle,param_fromIndex:=1) {
-		if (!this.isString(param_string) || !this.isString(param_needle) || !this.isNumber(param_fromIndex)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string", "integer", "float"], param_needle, ["string", "integer"]
+				, param_fromIndex, [isNumber])
 		}
 		l_startString := subStr(param_string, param_fromIndex, strLen(param_needle))
 		if (this.isEqual(l_startString, param_needle)) {
@@ -1232,14 +1319,11 @@ class adash {
 		return strLower(param_string)
 	}
 	static toUpper(param_string) {
-		if (!this.isString(param_string)) {
-			this._throwTypeException()
-		}
 		return strUpper(param_string)
 	}
 	static trim(param_string,param_chars:="") {
-		if (!this.isString(param_string) || !this.isString(param_chars)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string", "integer", "float"], param_chars, ["string", "integer", "float"])
 		}
 		if (param_chars == "") {
 			return this.trim(param_string, "`r`n" A_space A_tab)
@@ -1249,23 +1333,23 @@ class adash {
 			return l_string
 		}
 	}
-	static trimEnd(paramString, paramChars := "") {
-		if (!this.isString(paramString) || !this.isString(paramChars)) {
-			this._throwTypeException()
+	static trimEnd(param_string,param_chars:="") {
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string", "integer", "float"], param_chars, ["string", "integer", "float"])
 		}
-		if (paramChars == "") {
-			return rtrim(paramString)
+		if (param_chars == "") {
+			return rtrim(param_string)
 		}
-		stringLength := strLen(paramString)
+		stringLength := strLen(param_string)
 		endIndex := stringLength
-		while (endIndex > 0 && inStr(paramChars, subStr(paramString, endIndex, 1))) {
+		while (endIndex > 0 && inStr(param_chars, subStr(param_string, endIndex, 1))) {
 			endIndex--
 		}
-		return subStr(paramString, 1, endIndex)
+		return subStr(param_string, 1, endIndex)
 	}
-	static trimStart(param_string, param_chars := "") {
-		if (!this.isString(param_string) || !this.isString(param_chars)) {
-			this._throwTypeException()
+	static trimStart(param_string,param_chars := "") {
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string", "integer", "float"], param_chars, ["string", "integer", "float"])
 		}
 		if (param_chars = "") {
 			return regexReplace(param_string, "^\s+")
@@ -1289,8 +1373,8 @@ class adash {
 		}
 	}
 	static truncate(param_string,param_options:="") {
-		if (!this.isString(param_string)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string", "integer", "float"])
 		}
 		if (!isObject(param_options)) {
 			param_options := {}
@@ -1316,8 +1400,8 @@ class adash {
 		return l_string
 	}
 	static unescape(param_string:="") {
-		if (!this.isString(param_string)) {
-			this._throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string"])
 		}
 		HTMLmap := [["&","&amp;"], ["<","&lt;"], [">","&gt;"], ["`"","&quot;"], ["'","&#39;"]]
 		for key, value in HTMLmap {
@@ -1326,14 +1410,11 @@ class adash {
 		return param_string
 	}
 	static upperFirst(param_string:="") {
-		if (!this.isString(param_string)) {
-			this._throwTypeException()
-		}
 		return this.toUpper(subStr(param_string, 1, 1)) subStr(param_string, 2)
 	}
 	static words(param_string,param_pattern:="") {
-		if (!this.isString(param_string) || !this.isString(param_pattern)) {
-			this.throwTypeException()
+		if (this.throwExceptions) {
+			this._validateTypes(param_string, ["string"], param_pattern, ["string"])
 		}
 		if (param_pattern == "") {
 			param_pattern := "\b\w+(?:'\w+)?\b"
@@ -1358,9 +1439,19 @@ class adash {
 			return subStr(param, 1, 1)
 		}
 	}
-	static _throwTypeException(param_expectedType:="",param_received:="") {
-		if (this.throwExceptions == true) {
-			throw valueError("Type Error", -2, "Expected " param_expectedType " but received " type(param_received))
+	static _throwTypeException(param_received:="",param_expectedType:="") {
+		throw valueError("Type Error", -3, "Expected: (" this._formatTypeNames(param_expectedType) ") but received (" type(param_received) ")")
+	}
+	static _formatTypeNames(typeArray) {
+		formattedTypes := []
+		for _, typeCheck in typeArray {
+			if this.isFunction(typeCheck) {
+				typeName := this.last(strSplit(typeCheck.name, "is"))
+				formattedTypes.push(this.upperFirst(typeName))
+			} else if this.isString(typeCheck) {
+				formattedTypes.push(this.upperFirst(typeCheck))
+			}
 		}
+		return this.join(formattedTypes, "|")
 	}
 }

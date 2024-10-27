@@ -205,8 +205,7 @@ value (*): The value to fill array with.
 #### Example
 
 ```autohotkey
-arr := [1, 2, 3]
-_.fill(arr, "a")
+arr := [1, 2, 3]_.fill(arr, "a")
 ; => ["a", "a", "a"]
 
 _.fill([4, 6, 8, 10], "*", 2, 3)
@@ -372,15 +371,13 @@ value (*): The value to search for.
 _.indexOf([1, 2, 1, 2], 2)
 ; => 2
 
-; Search from the `fromIndex`.
-_.indexOf([1, 2, 1, 2], 2, 3)
+; Search from the `fromIndex`._.indexOf([1, 2, 1, 2], 2, 3)
 ; => 4
 
 _.indexOf(["neo", "morpheus"], "trinity")
 ; => -1
 
-_.stringCaseSense := true
-_.indexOf(["neo", "morpheus"], "Neo")
+_.stringCaseSense := true_.indexOf(["neo", "morpheus"], "Neo")
 ; => -1
 
 ```
@@ -436,6 +433,23 @@ _.intersection([2, 1], [2, 3])
 
 
 
+## .join
+Converts all elements in array into a string separated by separator.
+
+
+#### Arguments
+array (Array): The array to convert.
+
+[separator:=","] (string): The element separator.
+
+
+#### Returns
+(string): Returns the joined string.
+
+
+#### Example
+
+```autohotkey
 _.join(["a", "b", "c"], "~")
 ; => "a~b~c"
 
@@ -499,12 +513,10 @@ value (*): The value to search for.
 _.lastIndexOf([1, 2, 1, 2], 2)
 ; => 4
 
-; Search from the `fromIndex`.
-_.lastIndexOf([1, 2, 1, 2], 1, 2)
-; => 1
+; Search from the `fromIndex`._.lastIndexOf([1, 2, 1, 2], 1, 3)
+; => 3
 
-_.stringCaseSense := true
-_.lastIndexOf(["neo", "morpheus"], "Neo")
+_.stringCaseSense := true_.lastIndexOf(["neo", "morpheus"], "Neo")
 ; => -1
 
 ```
@@ -817,6 +829,27 @@ _.uniq([2, 1, 2])
 
 
 
+## .unzip
+This method is like [_.zip](/?id=zip) except that it accepts an array of grouped elements and creates an array regrouping the elements to their pre-zip configuration.
+
+#### Arguments
+array (Array): The array of grouped elements to process.
+
+
+#### Returns
+
+(Array): Returns the new array of regrouped elements.
+
+#### Example
+
+```autohotkey
+zipped := _.zip(["a", "b"], [1, 2], [true, false]); => [["a", 1, true], ["b", 2, false]]_.unzip(zipped)
+; => [["a", "b"], [1, 2], [true, false]]
+
+```
+
+
+
 ## .without
 Creates an array excluding all given values.
 
@@ -928,10 +961,7 @@ collection (Array|Object): The collection to iterate over.
 #### Example
 
 ```autohotkey
-fn_square(n) {
-	return n * n
-}
-_.map([4, 8], fn_square)
+fn_square(n) {	return n * n}_.map([4, 8], fn_square)
 ; => [16, 64]
 
 _.map({ a: 4, b: 8 }, fn_square)
@@ -1055,9 +1085,7 @@ value (*): The value to clone.
 #### Example
 
 ```autohotkey
-objects := [{ a: 1 }, { b: 2 }]
-shallow := _.clone(objects)
-_.isEqual(objects, shallow)
+objects := [{ a: 1 }, { b: 2 }]shallow := _.clone(objects)_.isEqual(objects, shallow)
 ; => true
 
 ```
@@ -1079,14 +1107,7 @@ value (*): The value to recursively clone.
 #### Example
 
 ```autohotkey
-obj := [{ a: [[1, 2, 3]] }, { b: 2 }]
-deepclone := _.cloneDeep(obj)
-obj[1].a := 2
-; object
-; => [{ "a": 2 }, { "b": 2 }]
-; deepclone
-; => [{ "a": [[1, 2, 3]] }, { "b": 2 }]
-```
+obj := [{ a: [[1, 2, 3]] }, { b: 2 }]deepclone := _.cloneDeep(obj)obj[1].a := 2; object; => [{ "a": 2 }, { "b": 2 }]; deepclone; => [{ "a": [[1, 2, 3]] }, { "b": 2 }]```
 
 
 
@@ -1195,8 +1216,35 @@ value (*): The value to check.
 #### Example
 
 ```autohotkey
-myBuffer := buffer(20, 100)
-_.isBuffer(myBuffer)
+myBuffer := buffer(20, 100)_.isBuffer(myBuffer)
+; => true
+
+```
+
+
+
+## .isEmpty
+Checks if `value` is an empty object, array, or map.
+
+
+#### Arguments
+value (*): The value to check.
+
+
+#### Returns
+(boolean): Returns `true` if value is empty, else `false.
+
+
+#### Example
+
+```autohotkey
+_.isEmpty([])
+; => true
+
+_.isEmpty({})
+; => true
+
+_.isEmpty(map())
 ; => true
 
 ```
@@ -1231,8 +1279,7 @@ _.isEqual({ a: 1 }, { a: 1 })
 _.isEqual(1, 1, 2)
 ; => false
 
-_.stringCaseSense := true
-_.isEqual({ a: "a" }, { a: "A" })
+_.stringCaseSense := true_.isEqual({ a: "a" }, { a: "A" })
 ; => false
 
 ```
@@ -1257,6 +1304,11 @@ value (*): The value to check.
 _.isFloat(1.0)
 ; => true
 
+_.isFloat(1)
+; => false
+
+```
+
 
 
 ## .isFunction
@@ -1264,7 +1316,7 @@ Checks if `value` is callable as a function object, bound function, or object me
 
 
 #### Arguments
-value (*): The `value` to check.
+value (*): The value to check.
 
 
 #### Returns
@@ -1274,8 +1326,7 @@ value (*): The `value` to check.
 #### Example
 
 ```autohotkey
-bndFunc := strLen.bind("one")
-_.isFunction(bndFunc)
+bndFunc := strLen.bind("one")_.isFunction(bndFunc)
 ; => true
 
 _.isFunction(_.size)
@@ -1313,10 +1364,35 @@ _.isInteger("1")
 
 
 
-## .isMatch
-Performs a partial deep comparison between object and source to determine if object contains equivalent property values.
+## .isMap
+Checks if `value` is classified as a Map object.
 
-Partial comparisons will match empty array and empty object source values against any array or object value, respectively. See [_.isEqual](/?id=isEqual) for a list of supported value comparisons.
+
+#### Arguments
+value (*): The value to check.
+
+
+#### Returns
+(boolean): Returns `true` if `value` is map, else `false`.
+
+
+#### Example
+
+```autohotkey
+_.isMap(map(1, "Neo"))
+; => true
+
+_.isMap([])
+; => false
+
+```
+
+
+
+## .isMatch
+Performs a partial deep comparison between `object` and source to determine if `object` contains equivalent property values.
+
+Partial comparisons will match empty array and empty object `source` values against any array or object value, respectively. See [_.isEqual](/?id=isEqual).
 
 
 #### Arguments
@@ -1331,8 +1407,7 @@ source obj: The object of property values to match.
 #### Example
 
 ```autohotkey
-obj := { a: 1, b: 2, c: 3 }
-_.isMatch(obj, {b: 2})
+obj := { a: 1, b: 2, c: 3 }_.isMatch(obj, {b: 2})
 ; => true
 
 _.isMatch(obj, {b: 2, c: 3})
@@ -1444,11 +1519,11 @@ value (*): The value to check.
 #### Example
 
 ```autohotkey
-_.isUndefined("")
-; => false
-
 _.isUndefined(non_existant_var)
 ; => true
+
+_.isUndefined("")
+; => false
 
 _.isUndefined({})
 ; => false
@@ -1657,6 +1732,8 @@ _.max([])
 ; => ""
 
 ```
+
+
 
 ## .mean
 Computes the mean of the values in `array`.
@@ -1969,8 +2046,7 @@ When working with HTML you should always quote attribute values to reduce XSS ve
 #### Example
 
 ```autohotkey
-str := "neo, morpheus, & trinity"
-_.escape(str)
+str := "neo, morpheus, & trinity"_.escape(str)
 ; => "neo, morpheus, &amp; trinity"
 
 ```
@@ -2103,6 +2179,19 @@ string (string): The string to convert.
 (number): Returns the converted integer.
 
 
+#### Example
+
+```autohotkey
+_.parseInt("08")
+; => 8
+
+_.map(["6", "08", "10"], _.parseInt)
+; => [6, 8, 10]
+
+```
+
+
+
 ## .repeat
 Repeats the given string `n` times.
 
@@ -2161,8 +2250,7 @@ _.startsWith("abc", "b")
 _.startsWith("abc", "b", 2)
 ; => true
 
-_.stringCaseSense := true
-_.startsWith("abc", "A")
+_.stringCaseSense := true_.startsWith("abc", "A")
 ; => false
 
 ```
@@ -2330,8 +2418,7 @@ Truncates `string` if it's longer than the given maximum string length. The last
 #### Example
 
 ```autohotkey
-str := "hi-diddly-ho there, neighborino"
-_.truncate(str)
+str := "hi-diddly-ho there, neighborino"_.truncate(str)
 ; => "hi-diddly-ho there, neighbor..."
 
 _.truncate(str, {length: 24, separator: " "})
@@ -2358,8 +2445,7 @@ The inverse of [_.escape](#escape) this method converts the HTML entities &amp;,
 #### Example
 
 ```autohotkey
-str := "neo, morpheus, &amp; trinity"
-_.unescape(str)
+str := "neo, morpheus, &amp; trinity"_.unescape(str)
 ; => "neo, morpheus, & trinity"
 
 ```
@@ -2435,12 +2521,10 @@ value (*): Any value.
 #### Example
 
 ```autohotkey
-obj := {a: 1}
-_.identity(obj)
+obj := {a: 1}_.identity(obj)
 ; => {a: 1}
 
-assert.true(_.identity(obj) == obj)
-```
+assert.true(_.identity(obj) == obj)```
 
 
 
