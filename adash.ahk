@@ -763,9 +763,11 @@ class adash {
 				return param_predicate.call(param_value, param_key, param_collection)
 		}
 	}
-	static _findGuarded(target) {
-		if (this._guarded.has(target.name)) {
-			return this._guarded[target.name]
+	static _findGuarded(param_target) {
+		if (type(param_target) == "Func") {
+			if (this._guarded.has(param_target.name)) {
+				return this._guarded[param_target.name]
+			}
 		}
 		return {type: "none"}
 	}
