@@ -612,6 +612,17 @@ class adash {
 			}
 		}
 	}
+	static _includes(param_collection,param_value) {
+		if (isObject(param_collection)) {
+			for key, value in param_collection {
+				if (value == param_value) {
+					return true
+				}
+			}
+			return false
+		}
+		return (inStr(param_collection, param_value, 0) > 0)
+	}
 	static map(param_collection,param_iteratee:="__identity") {
 		if (this.throwExceptions) {
 			this._validateTypes(param_collection, ["array", "string", "object"], param_iteratee, ["string", this.isFunction])
