@@ -329,7 +329,10 @@ class adash {
 	}
 	static lastIndexOf(param_array,param_value,param_fromIndex:=0) {
 		if (this.throwExceptions) {
-			this._validateTypes(param_array, ["array"], param_fromIndex, ["integer"])
+			this._validateTypes(param_array, ["array", "string", "integer"], param_fromIndex, ["integer"])
+		}
+		if (this.isString(param_array) || this.isInteger(param_array)) {
+			param_array := strSplit(param_array)
 		}
 		if (param_fromIndex == 0 || param_fromIndex > param_array.length - 1) {
 			param_fromIndex := param_array.length - 1
