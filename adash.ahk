@@ -872,7 +872,6 @@ class adash {
 							is_valid := true
 							break
 						}
-						break
 					}
 				}
 				if (!is_valid) {
