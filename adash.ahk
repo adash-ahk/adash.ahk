@@ -876,7 +876,7 @@ class adash {
 						is_valid := true
 						break
 					} else if (this.isFunction(type_check)) {
-						if (this.includes(type_check.name, this.prototype.__class ".")) {
+						if (this._includes(type_check.name, this.prototype.__class ".")) {
 							if (type_check(this, value)) {
 								is_valid := true
 								break
