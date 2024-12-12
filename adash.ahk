@@ -231,6 +231,13 @@ class adash {
 			param_value := this._hash(param_value)
 			param_array := this.map(param_array, this._hash)
 		}
+		if (param_fromIndex < 0) {
+			param_fromIndex := this.size(param_array) + param_fromIndex + 1
+			if (param_fromIndex < 1) {
+				param_fromIndex := 1
+			}
+		}
+		if (isObject(param_array) && param_array.hasProp("__Item")) {
 			for key, value in param_array {
 				if (A_Index < param_fromIndex) {
 					continue
