@@ -590,6 +590,9 @@ class adash {
 		return l_obj
 	}
 	static includes(param_collection,param_value,param_fromIndex:=1) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_collection, ["array", "string"], param_fromIndex, ["integer"])
+		}
 		if (isObject(param_value)) {
 			param_value := this._hash(param_value)
 			param_collection := this.map(param_collection, this._hash)
