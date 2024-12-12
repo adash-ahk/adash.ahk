@@ -983,6 +983,14 @@ class adash {
 		}
 		return true
 	}
+	static isNative(param_value) {
+		if (this.isFunction(param_value)) {
+			if (param_value.IsBuiltIn == true) {
+				return true
+			}
+		}
+		return false
+	}
 	static isNumber(param) => isNumber(param)
 	static isObject(param) => isObject(param)
 	static isString(param) => (type(param) == "String")
