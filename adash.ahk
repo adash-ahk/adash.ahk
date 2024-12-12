@@ -1206,6 +1206,40 @@ class adash {
 		}
 		return random(param_lower, param_upper)
 	}
+	static get(paramObject,paramPath,param_defaultValue:="") {
+		if (this.throwExceptions) {
+			this._validateTypes(paramObject, [isObject], paramPath, ["string", isObject])
+		}
+		if (!isObject(paramPath)) {
+			paramPath := this.toPath(paramPath)
+		}
+		currentValue := paramObject
+		for key, part in paramPath {
+			switch (type(currentValue)) {
+				case "Object":
+					if (currentValue.hasOwnProp(part)) {
+						currentValue := currentValue.%part%
+					} else {
+						return param_defaultValue
+					}
+				case "Array":
+					if (currentValue.has(part)) {
+						currentValue := currentValue[part]
+					} else {
+						return param_defaultValue
+					}
+				case "Map":
+					if (currentValue.has(part)) {
+						currentValue := currentValue[part]
+					} else {
+						return param_defaultValue
+					}
+				default:
+					return param_defaultValue
+			}
+		}
+		return currentValue
+	}
 	static endsWith(param_string,param_needle,param_fromIndex:=0) {
 		if (this.throwExceptions) {
 			this._validateTypes(param_string, ["string"], param_needle, ["string"]
