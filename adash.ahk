@@ -712,62 +712,18 @@ class adash {
 		switch (type(param_collection)) {
 			case "Object":
 				for key, value in param_collection.ownProps() {
-					if (this._applyPredicate(param_collection, key, value, param_predicate) == true) {
+					if (this._applyPredicateForward(value, param_predicate, key, param_collection) == true) {
 						return true
 					}
 				}
 			default:
 				for key, value in param_collection {
-					if (this._applyPredicate(param_collection, key, value, param_predicate) == true) {
+					if (this._applyPredicateForward(value, param_predicate, key, param_collection) == true) {
 						return true
 					}
 				}
 		}
 		return false
-	}
-	static _applyPredicate(param_collection,param_key,param_value,param_predicate) {
-		if (param_predicate == "__identity") {
-			param_predicate := this.identity
-		}
-		guarded := this._findGuarded(param_predicate)
-		switch (guarded.type) {
-			case "self":
-				switch (guarded.maxParams) {
-					case 1:
-						return param_predicate.call(this, param_value)
-					case 2:
-						return param_predicate.call(this, param_value, param_key)
-					case 3:
-						return param_predicate.call(this, param_value, param_key, param_collection)
-				}
-			case "function":
-				switch (guarded.maxParams) {
-					case 1:
-						return param_predicate.call(param_value)
-					case 2:
-						return param_predicate.call(param_value, param_key)
-					case 3:
-						return param_predicate.call(param_value, param_key, param_collection)
-				}
-		}
-		if (this.includes(param_predicate.name, this.prototype.__class ".")) {
-			switch (param_predicate.maxParams) {
-				case 2:
-					return param_predicate.call(this, param_value)
-				case 3:
-					return param_predicate.call(this, param_value, param_key)
-				case 4:
-					return param_predicate.call(this, param_value, param_key, param_collection)
-			}
-		}
-		switch (param_predicate.maxParams) {
-			case 1:
-				return param_predicate.call(param_value)
-			case 2:
-				return param_predicate.call(param_value, param_key)
-			case 3:
-				return param_predicate.call(param_value, param_key, param_collection)
-		}
 	}
 	static _applyPredicateForward(param_value,param_predicate,param_args*) {
 		if (param_predicate == "__identity") {
@@ -813,35 +769,6 @@ class adash {
 				return param_predicate.call(param_value, param_args[1], param_args[2])
 		}
 		return param_predicate.call(param_value)
-	}
-	static _createShorthand(param_predicate,other) {
-		switch (type(param_predicate)) {
-			case "Object":
-				return this.matches(param_predicate*)
-			case "Array":
-				return this.matchesProperty(param_predicate*)
-			case "String":
-				switch (param_predicate) {
-					case "__identity":
-						return this.identity
-					default:
-						return this.property(param_predicate)
-				}
-			default:
-				return param_predicate
-		}
-	}
-	static _createShorthandFn(param_predicate,param_collection) {
-		switch (type(param_predicate)) {
-			case "String":
-				return this.property(param_predicate)
-			case "Array":
-				return this.matchesProperty(param_predicate)
-			case "Object":
-				return this.matches(param_predicate)
-			default:
-				return {name: "__identity"}
-		}
 	}
 	static _findGuarded(param_target) {
 		if (type(param_target) == "Func") {
@@ -1628,22 +1555,10 @@ class adash {
 		}
 		l_array := []
 		if (param_iteratee == "__identity") {
-			param_iteratee := this.identity.bind(this)
+			param_iteratee := this.identity
 		}
-		guarded := this._findGuarded(param_iteratee)
-		switch (guarded.type) {
-			case "self":
-				loop (param_n) {
-					l_array.push(param_iteratee.call(this, A_Index))
-				}
-			case "none":
-				loop (param_n) {
-					l_array.push(param_iteratee.call(A_Index))
-				}
-			case "function":
-				loop (param_n) {
-					l_array.push(param_iteratee.call(A_Index))
-				}
+		loop (param_n) {
+			l_array.push(this._applyPredicateForward(A_Index, param_iteratee))
 		}
 		return l_array
 	}

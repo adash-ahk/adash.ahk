@@ -28,7 +28,7 @@ _.chunk(["a", "b", "c", "d"], 3)
 
 
 ## .compact
-Creates an array with all falsey values removed. The values `false`, `0`, and `""` are falsey.
+Creates an array with all falsey values removed. The values `false`, `0`, `""`, and `unset` are falsey.
 
 
 #### Arguments
@@ -182,7 +182,7 @@ _.dropRight(100)
 
 
 ## .fill
-Fills elements of array with value from start up to, but not including, end.
+Fills elements of array with `value` from start up to, but not including, `end`.
 
 > [!Note]
 > This method mutates the array.
@@ -205,10 +205,11 @@ value (*): The value to fill array with.
 #### Example
 
 ```autohotkey
-arr := [1, 2, 3]_.fill(arr, "a")
+arr := [1, 2, 3]
+_.fill(arr, "a")
 ; => ["a", "a", "a"]
 
-_.fill([4, 6, 8, 10], "*", 2, 3)
+_.fill([4, 6, 8, 10], "*", 2, 4)
 ; => [4, "*", "*", 10]
 
 ```
@@ -336,14 +337,11 @@ array (Array): The array to query.
 _.head([1, 2, 3])
 ; => 1
 
-_.head([])
-; => ""
+_.head({a: 1, b: 2, c:3})
+; => 1
 
-_.head("neo")
-; => "n"
-
-_.head(100)
-; => "1"
+_.head("Neo")
+; => "N"
 
 ```
 
@@ -371,13 +369,12 @@ value (*): The value to search for.
 _.indexOf([1, 2, 1, 2], 2)
 ; => 2
 
-; Search from the `fromIndex`._.indexOf([1, 2, 1, 2], 2, 3)
+; Search from the `fromIndex`.
+_.indexOf([1, 2, 1, 2], 2, 3)
 ; => 4
 
-_.indexOf(["neo", "morpheus"], "trinity")
-; => -1
-
-_.stringCaseSense := true_.indexOf(["neo", "morpheus"], "Neo")
+_.stringCaseSense := true
+_.indexOf(["neo", "morpheus"], "Neo")
 ; => -1
 
 ```
@@ -513,10 +510,12 @@ value (*): The value to search for.
 _.lastIndexOf([1, 2, 1, 2], 2)
 ; => 4
 
-; Search from the `fromIndex`._.lastIndexOf([1, 2, 1, 2], 1, 3)
+; Search from the `fromIndex`.
+_.lastIndexOf([1, 2, 1, 2], 1, 3)
 ; => 3
 
-_.stringCaseSense := true_.lastIndexOf(["neo", "morpheus"], "Neo")
+_.stringCaseSense := true
+_.lastIndexOf(["neo", "morpheus"], "Neo")
 ; => -1
 
 ```
@@ -843,7 +842,9 @@ array (Array): The array of grouped elements to process.
 #### Example
 
 ```autohotkey
-zipped := _.zip(["a", "b"], [1, 2], [true, false]); => [["a", 1, true], ["b", 2, false]]_.unzip(zipped)
+zipped := _.zip(["a", "b"], [1, 2], [true, false])
+; => [["a", 1, true], ["b", 2, false]]
+_.unzip(zipped)
 ; => [["a", "b"], [1, 2], [true, false]]
 
 ```
@@ -961,14 +962,18 @@ collection (Array|Object): The collection to iterate over.
 #### Example
 
 ```autohotkey
-fn_square(n) {	return n * n}_.map([4, 8], fn_square)
+fn_square(n) {
+	return n * n
+}
+_.map([4, 8], fn_square)
 ; => [16, 64]
 
 _.map({ a: 4, b: 8 }, fn_square)
 ; => [16, 64]
 
-_.map({ a: 4, b: 8 })
-; => [4, 8]
+data_array := ["Neo", "Morpheus", "Trinity"]
+_.map(data_array, (value) => ({name: value, id: A_Index}))
+; => [{name: "Neo", id: 1}, {name: "Morpheus", id: 2}, {name: "Trinity", id: 3}]
 
 ```
 
@@ -1085,7 +1090,9 @@ value (*): The value to clone.
 #### Example
 
 ```autohotkey
-objects := [{ a: 1 }, { b: 2 }]shallow := _.clone(objects)_.isEqual(objects, shallow)
+objects := [{ a: 1 }, { b: 2 }]
+shallow := _.clone(objects)
+_.isEqual(objects, shallow)
 ; => true
 
 ```
@@ -1107,7 +1114,14 @@ value (*): The value to recursively clone.
 #### Example
 
 ```autohotkey
-obj := [{ a: [[1, 2, 3]] }, { b: 2 }]deepclone := _.cloneDeep(obj)obj[1].a := 2; object; => [{ "a": 2 }, { "b": 2 }]; deepclone; => [{ "a": [[1, 2, 3]] }, { "b": 2 }]```
+obj := [{ a: [[1, 2, 3]] }, { b: 2 }]
+deepclone := _.cloneDeep(obj)
+obj[1].a := 2
+; object
+; => [{ "a": 2 }, { "b": 2 }]
+; deepclone
+; => [{ "a": [[1, 2, 3]] }, { "b": 2 }]
+```
 
 
 
@@ -1216,7 +1230,8 @@ value (*): The value to check.
 #### Example
 
 ```autohotkey
-myBuffer := buffer(20, 100)_.isBuffer(myBuffer)
+myBuffer := buffer(20, 100)
+_.isBuffer(myBuffer)
 ; => true
 
 ```
@@ -1279,7 +1294,8 @@ _.isEqual({ a: 1 }, { a: 1 })
 _.isEqual(1, 1, 2)
 ; => false
 
-_.stringCaseSense := true_.isEqual({ a: "a" }, { a: "A" })
+_.stringCaseSense := true
+_.isEqual({ a: "a" }, { a: "A" })
 ; => false
 
 ```
@@ -1326,7 +1342,8 @@ value (*): The value to check.
 #### Example
 
 ```autohotkey
-bndFunc := strLen.bind("one")_.isFunction(bndFunc)
+bndFunc := strLen.bind("one")
+_.isFunction(bndFunc)
 ; => true
 
 _.isFunction(_.size)
@@ -1396,18 +1413,19 @@ Partial comparisons will match empty array and empty object `source` values agai
 
 
 #### Arguments
-object obj: The object to inspect.
+object (Object): The object to inspect.
 
-source obj: The object of property values to match.
+source (Object): The object of property values to match.
 
 
 #### Returns
-(boolean): Returns true if object is a match, else false.
+(boolean): Returns `true` if `object` is a match, else `false`.
 
 #### Example
 
 ```autohotkey
-obj := { a: 1, b: 2, c: 3 }_.isMatch(obj, {b: 2})
+obj := { a: 1, b: 2, c: 3 }
+_.isMatch(obj, {b: 2})
 ; => true
 
 _.isMatch(obj, {b: 2, c: 3})
@@ -1417,6 +1435,34 @@ _.isMatch(obj, {b: 1})
 ; => false
 
 _.isMatch(obj, {b: 2, z: 99})
+; => false
+
+```
+
+
+
+## .isNative
+Checks if value is a pristine native function.
+
+
+#### Arguments
+value (*): The value to check.
+
+
+#### Returns
+(boolean): Returns `true` if `value` is a native function, else `false`.
+
+#### Example
+
+```autohotkey
+_.isNative(isFloat)
+; => true
+
+boundFn := inStr.bind()
+_.isNative(boundFn)
+; => false
+
+_.isNative(_)
 ; => false
 
 ```
@@ -1991,6 +2037,70 @@ _.map(_.random([10, 10, 10]))
 
 
 
+# **Object methods**
+## .get
+Gets the value at `path` of `object`. If the resolved value is `unset`, the `defaultValue` is returned in its place.
+
+
+#### Arguments
+object (Object): The object to query.
+
+path (Array|string): The path of the property to get.
+
+[defaultValue] (*): The value returned for undefined resolved values.
+
+
+#### Returns
+(*): Returns the resolved value.
+
+
+#### Example
+
+```autohotkey
+obj := {a: [{b: {c: 3}}]}
+_.get(obj, "a[1].b.c")
+; => 3
+
+_.get(obj, ["a", "1", "b", "c"])
+; => 3
+
+_.get(obj, "a.b.c", "default")
+; => "default"
+
+```
+
+
+
+## .set
+Sets the value at `path` of `object`. If a portion of `path` doesn't exist, it's created. Objects are created for all missing properties.
+
+> [!Note]
+> This method mutates `object`.
+
+#### Arguments
+object (Object): The object to modify.
+
+path (Array|string): The path of the property to set.
+
+value (*): The value to set.
+
+#### Returns
+(Object): Returns object.
+
+
+#### Example
+
+```autohotkey
+obj := {a: [{b: {c: 3}}]}
+_.set(obj, "a[1].b.c", 4)
+assert.test(obj.a[1].b.c, 4)
+_.set(obj, ["x", "1", "y", "z"], 5)
+assert.test(obj.x[1].y.z, 5)
+```
+
+
+
+
 # **String methods**
 ## .endsWith
 Checks if `string` ends with the given target string.
@@ -2046,7 +2156,8 @@ When working with HTML you should always quote attribute values to reduce XSS ve
 #### Example
 
 ```autohotkey
-str := "neo, morpheus, & trinity"_.escape(str)
+str := "neo, morpheus, & trinity"
+_.escape(str)
 ; => "neo, morpheus, &amp; trinity"
 
 ```
@@ -2250,7 +2361,8 @@ _.startsWith("abc", "b")
 _.startsWith("abc", "b", 2)
 ; => true
 
-_.stringCaseSense := true_.startsWith("abc", "A")
+_.stringCaseSense := true
+_.startsWith("abc", "A")
 ; => false
 
 ```
@@ -2418,7 +2530,8 @@ Truncates `string` if it's longer than the given maximum string length. The last
 #### Example
 
 ```autohotkey
-str := "hi-diddly-ho there, neighborino"_.truncate(str)
+str := "hi-diddly-ho there, neighborino"
+_.truncate(str)
 ; => "hi-diddly-ho there, neighbor..."
 
 _.truncate(str, {length: 24, separator: " "})
@@ -2445,7 +2558,8 @@ The inverse of [_.escape](#escape) this method converts the HTML entities &amp;,
 #### Example
 
 ```autohotkey
-str := "neo, morpheus, &amp; trinity"_.unescape(str)
+str := "neo, morpheus, &amp; trinity"
+_.unescape(str)
 ; => "neo, morpheus, & trinity"
 
 ```
@@ -2521,10 +2635,58 @@ value (*): Any value.
 #### Example
 
 ```autohotkey
-obj := {a: 1}_.identity(obj)
+obj := {a: 1}
+_.identity(obj)
 ; => {a: 1}
 
-assert.true(_.identity(obj) == obj)```
+(_.identity(obj) == obj)
+; => true
+
+```
 
 
 
+## .times
+Invokes the `iteratee` `n` times, returning an array of the results of each invocation. The iteratee is invoked with one argument; (index).
+
+
+#### Arguments
+n (number): The number of times to invoke iteratee.
+
+[iteratee:=.identity] (Function): The function invoked per iteration.
+
+
+#### Returns
+(Array): Returns the array of results.
+
+#### Example
+```autohotkey
+_.times(4)
+; => [1, 2, 3, 4]
+```
+
+
+
+
+## .toPath
+Converts `value` to a property path array.
+
+
+#### Arguments
+value (*): The value to convert.
+
+
+#### Returns
+(Array): Returns the new property path array.
+
+
+#### Example
+
+```autohotkey
+_.toPath("a.b.c")
+; => ["a", "b", "c"]
+
+_.toPath("a[1].b.c")
+; => ["a", "1", "b", "c"]
+
+```
