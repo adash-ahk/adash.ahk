@@ -1548,6 +1548,31 @@ class adash {
 		return localArray
 	}
 	static identity(param_value) => param_value
+	static times(param_n,param_iteratee:="__identity") {
+		if (this.throwExceptions) {
+			this._validateTypes(param_n, [this.isNumber], param_iteratee, [this.isFunction, "string"])
+		}
+		l_array := []
+		if (param_iteratee == "__identity") {
+			param_iteratee := this.identity.bind(this)
+		}
+		guarded := this._findGuarded(param_iteratee)
+		switch (guarded.type) {
+			case "self":
+				loop (param_n) {
+					l_array.push(param_iteratee.call(this, A_Index))
+				}
+			case "none":
+				loop (param_n) {
+					l_array.push(param_iteratee.call(A_Index))
+				}
+			case "function":
+				loop (param_n) {
+					l_array.push(param_iteratee.call(A_Index))
+				}
+		}
+		return l_array
+	}
 	static toPath(param_value) {
 		if (this.throwExceptions) {
 			this._validateTypes(param_value, ["string", isObject, "integer"])
