@@ -223,16 +223,14 @@ class adash {
 		if (this.throwExceptions) {
 			this._validateTypes(param_array, [isObject, "string"], param_fromIndex, ["integer"])
 		}
-		switch (type(param_value)) {
-			case "Array":
-				param_value := this._hash(param_value)
-				param_array := this.map(param_array, this._hash)
-		}
 		switch (type(param_array)) {
 			case "String":
 				param_array := strSplit(param_array)
 		}
-		if (param_array.hasProp("__Item")) {
+		if (isObject(param_value)) {
+			param_value := this._hash(param_value)
+			param_array := this.map(param_array, this._hash)
+		}
 			for key, value in param_array {
 				if (A_Index < param_fromIndex) {
 					continue
