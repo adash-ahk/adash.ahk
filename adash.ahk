@@ -139,10 +139,10 @@ class adash {
 				, param_end, ["integer"])
 		}
 		if (param_end == -1) {
-			param_end := this.size(param_array)
+			param_end := param_array.length + 1
 		}
 		for key, value in param_array {
-			if (key >= param_start && key <= param_end) {
+			if (key >= param_start && key < param_end) {
 				param_array[key] := param_value
 			}
 		}
