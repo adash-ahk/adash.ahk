@@ -607,7 +607,7 @@ class adash {
 	}
 	static map(param_collection,param_iteratee:="__identity") {
 		if (this.throwExceptions) {
-			this._validateTypes(param_collection, ["array", "string", "object"], param_iteratee, ["string", "func"])
+			this._validateTypes(param_collection, ["array", "string", "object"], param_iteratee, ["string", this.isFunction])
 		}
 		if (this.isString(param_collection)) {
 			l_collection := strSplit(param_collection)
