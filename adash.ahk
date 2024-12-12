@@ -1452,6 +1452,36 @@ class adash {
 		return localArray
 	}
 	static identity(param_value) => param_value
+	static toPath(param_value) {
+		if (this.throwExceptions) {
+			this._validateTypes(param_value, ["string", isObject, "integer"])
+		}
+		if (isObject(param_value)) {
+			return param_value
+		}
+		path_parts := []
+		current_part := ""
+		loop parse, (param_value) {
+			char := A_LoopField
+			if (char = "." || char = "[") {
+				if (current_part != "") {
+					path_parts.push(current_part)
+					current_part := ""
+				}
+			} else if (char = "]") {
+				if (current_part != "") {
+					path_parts.push(current_part)
+					current_part := ""
+				}
+			} else {
+				current_part .= char
+			}
+		}
+		if (current_part != "") {
+			path_parts.push(current_part)
+		}
+		return this.compact(path_parts)
+	}
 	static first(param) {
 		if (this.isObject(param) && param.hasProp("__Item")) {
 			return (param.length > 0) ? param[1] : ""
