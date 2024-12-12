@@ -1240,6 +1240,46 @@ class adash {
 		}
 		return currentValue
 	}
+	static set(paramObject,paramPath,paramValue) {
+		if (this.throwExceptions) {
+			this._validateTypes(paramObject, [isObject], paramPath, ["string", isObject, "integer"])
+		}
+		if (!isObject(paramPath)) {
+			paramPath := this.toPath(paramPath)
+		}
+		currentObject := paramObject
+		for key, part in paramPath {
+			if (key = paramPath.length) {
+				switch (type(currentObject)) {
+					case "Object":
+						currentObject.%part% := paramValue
+					case "Array":
+						currentObject.insertAt(part, paramValue)
+					case "Map":
+						currentObject.set(part, paramValue)
+				}
+			} else {
+				switch (type(currentObject)) {
+					case "Object":
+						if (!currentObject.hasOwnProp(part)) {
+							currentObject.%part% := isInteger(paramPath[key + 1]) ? [] : {}
+						}
+						currentObject := currentObject.%part%
+					case "Array":
+						if (part >= currentObject.length) {
+							loop (part - currentObject.length) {
+								currentObject.push({})
+							}
+						}
+						if (!IsObject(currentObject[part])) {
+							currentObject[part] := isInteger(paramPath[key + 1]) ? [] : {}
+						}
+						currentObject := currentObject[part]
+				}
+			}
+		}
+		return paramObject
+	}
 	static endsWith(param_string,param_needle,param_fromIndex:=0) {
 		if (this.throwExceptions) {
 			this._validateTypes(param_string, ["string"], param_needle, ["string"]
