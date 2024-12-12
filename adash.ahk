@@ -850,6 +850,21 @@ class adash {
 				return (paramValueType = "object") ? "{" outValue "}" : (paramValueType = "Array") ? "[" outValue "]" : paramValueType "(" outValue ")"
 		}
 	}
+	static _throwTypeException(param_received:="",param_expectedType:="") {
+		throw valueError("Type Error", -3, "Expected: (" this._formatTypeNames(param_expectedType) ") but received (" type(param_received) ")")
+	}
+	static _formatTypeNames(typeArray) {
+		formattedTypes := []
+		for _, typeCheck in typeArray {
+			if this.isFunction(typeCheck) {
+				typeName := this.last(strSplit(typeCheck.name, "is"))
+				formattedTypes.push(this.upperFirst(typeName))
+			} else if this.isString(typeCheck) {
+				formattedTypes.push(this.upperFirst(typeCheck))
+			}
+		}
+		return this.join(formattedTypes, "|")
+	}
 	static _validateTypes(param_input*) {
 		for key, value in param_input {
 			if (mod(key, 2) != 0) {
@@ -1496,20 +1511,5 @@ class adash {
 		} else if (this.isString(param) || this.isNumber(param) || param == "") {
 			return subStr(param, 1, 1)
 		}
-	}
-	static _throwTypeException(param_received:="",param_expectedType:="") {
-		throw valueError("Type Error", -3, "Expected: (" this._formatTypeNames(param_expectedType) ") but received (" type(param_received) ")")
-	}
-	static _formatTypeNames(typeArray) {
-		formattedTypes := []
-		for _, typeCheck in typeArray {
-			if this.isFunction(typeCheck) {
-				typeName := this.last(strSplit(typeCheck.name, "is"))
-				formattedTypes.push(this.upperFirst(typeName))
-			} else if this.isString(typeCheck) {
-				formattedTypes.push(this.upperFirst(typeCheck))
-			}
-		}
-		return this.join(formattedTypes, "|")
 	}
 }
