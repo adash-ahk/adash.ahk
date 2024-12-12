@@ -221,7 +221,7 @@ class adash {
 	}
 	static indexOf(param_array,param_value,param_fromIndex:=1) {
 		if (this.throwExceptions) {
-			this._validateTypes(param_array, ["array", "string", "object"], param_fromIndex, ["integer"])
+			this._validateTypes(param_array, [isObject, "string"], param_fromIndex, ["integer"])
 		}
 		switch (type(param_value)) {
 			case "Array":
