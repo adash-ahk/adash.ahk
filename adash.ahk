@@ -1236,13 +1236,32 @@ class adash {
 					if (currentValue.has(part)) {
 						currentValue := currentValue[part]
 					} else {
-						return param_defaultValue
+	static hasIn(paramObject,paramPath,param_defaultValue:="") {
+		if (this.throwExceptions) {
+			this._validateTypes(paramObject, [isObject], paramPath, ["string", isObject])
+		}
+		if (!isObject(paramPath)) {
+			paramPath := this.toPath(paramPath)
+		}
+		currentValue := paramObject
+		for key, part in paramPath {
+			switch (type(currentValue)) {
+				case "Object":
+					if (currentValue.hasProp(part)) {
+						currentValue := currentValue.%part%
+					} else {
+						return false
 					}
 				default:
-					return param_defaultValue
+					if (currentValue.has(part)) {
+						currentValue := currentValue[part]
+					} else {
+						return false
+					}
 			}
 		}
-		return currentValue
+		return true
+	}
 	}
 	static set(paramObject,paramPath,paramValue) {
 		if (this.throwExceptions) {
