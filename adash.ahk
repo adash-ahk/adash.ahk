@@ -1288,7 +1288,6 @@ class adash {
 		}
 		return true
 	}
-	}
 	static set(paramObject,paramPath,paramValue) {
 		if (this.throwExceptions) {
 			this._validateTypes(paramObject, [isObject], paramPath, ["string", isObject, "integer"])
