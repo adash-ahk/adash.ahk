@@ -1226,12 +1226,16 @@ class adash {
 					} else {
 						return param_defaultValue
 					}
-				case "Array":
+				default:
 					if (currentValue.has(part)) {
 						currentValue := currentValue[part]
 					} else {
 						return param_defaultValue
 					}
+			}
+		}
+		return currentValue
+	}
 	static has(paramObject,paramPath,param_defaultValue:="") {
 		if (this.throwExceptions) {
 			this._validateTypes(paramObject, [isObject], paramPath, ["string", isObject])
