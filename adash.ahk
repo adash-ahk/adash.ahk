@@ -541,10 +541,14 @@ class adash {
 		if (this.throwExceptions) {
 			this._validateTypes(param_array, ["array"])
 		}
+	
+		; prepare
 		l_array := this.clone(param_array)
-		for i, val in param_values {
-			while (foundindex := this.indexOf(l_array, val) != -1) {
-				l_array.removeAt(foundindex)
+	
+		; create
+		for index, value in param_values {
+			while ((foundIndex := this.indexOf(l_array, value)) != -1) {
+				l_array.removeAt(foundIndex)
 			}
 		}
 		return l_array
