@@ -541,11 +541,7 @@ class adash {
 		if (this.throwExceptions) {
 			this._validateTypes(param_array, ["array"])
 		}
-	
-		; prepare
 		l_array := this.clone(param_array)
-	
-		; create
 		for index, value in param_values {
 			while ((foundIndex := this.indexOf(l_array, value)) != -1) {
 				l_array.removeAt(foundIndex)
@@ -1291,6 +1287,67 @@ class adash {
 			}
 		}
 		return true
+	}
+	static merge(param_collections*) {
+		result := param_collections[1]
+		for index, obj in param_collections {
+			if (A_Index == 1) {
+				continue
+			}
+			result := this._merge(result, obj)
+		}
+		return result
+	}
+	static _merge(param_value1, param_value2) {
+		if (!isObject(param_value1) && !isObject(param_value2)) {
+			if this.isUndefined(param_value1) {
+				return param_value2
+			}
+			if this.isUndefined(param_value2) {
+				return param_value1
+			}
+			return param_value2
+		}
+		combined := isObject(param_value1) ? this.cloneDeep(param_value1) : {}
+		switch type(param_value1) {
+			case "Object":
+				if (param_value2.hasProp("__Item")) {
+					for key, value in param_value2 {
+						if combined.hasProp(key) {
+							combined.%key% := this._merge(combined.%key%, value)
+						} else {
+							combined.%key% := value
+						}
+					}
+				} else {
+					for key, value in param_value2.ownProps() {
+						if combined.hasProp(key) {
+							combined.%key% := this._merge(combined.%key%, value)
+						} else {
+							combined.%key% := value
+						}
+					}
+				}
+			default:
+				if (param_value2.hasProp("__Item")) {
+					for key, value in param_value2 {
+						if (combined.has(key)) {
+							combined[key] := this._merge(combined[key], value)
+						} else {
+							combined.push(value)
+						}
+					}
+				} else {
+					for key, value in param_value2.ownProps() {
+						if (combined.has(key)) {
+							combined[key] := this._merge(combined[key], value)
+						} else {
+							combined.push(value)
+						}
+					}
+				}
+		}
+		return combined
 	}
 	static set(paramObject,paramPath,paramValue) {
 		if (this.throwExceptions) {

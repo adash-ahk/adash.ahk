@@ -259,9 +259,6 @@ array (Array): The array to flatten.
 _.flattenDeep([1])
 ; => [1]
 
-_.flattenDeep([1, [2]])
-; => [1, 2]
-
 _.flattenDeep([1, [2, [3, [4]], 5]])
 ; => [1, 2, 3, 4, 5]
 
@@ -2066,6 +2063,96 @@ _.get(obj, ["a", "1", "b", "c"])
 
 _.get(obj, "a.b.c", "default")
 ; => "default"
+
+```
+
+
+
+## .has
+Checks if `path` is a direct property of `object`.
+
+
+#### Arguments
+object (Object): The object to query.
+
+path (Array|string): The path to check.
+
+
+#### Returns
+(boolean): Returns true if path exists, else false.
+
+
+#### Example
+
+```autohotkey
+someBase := { a: "Alpha" }
+instance := { base: someBase, b: "Beta" }
+_.has(someBase, "a")
+; => true
+
+_.has(instance, "a")
+; => false
+
+_.has(instance, "b")
+; => true
+
+```
+
+
+
+## .hasIn
+Checks if `path` is a direct or inherited property of `object`.
+
+
+#### Arguments
+object (Object): The object to query.
+
+path (Array|string): The path to check.
+
+
+#### Returns
+(boolean): Returns true if path exists, else false.
+
+
+#### Example
+
+```autohotkey
+someBase := { a: "Alpha" }
+instance := { base: someBase, b: "Beta" }
+_.hasIn(instance, "a")
+; => true
+
+_.hasIn(instance, "b")
+; => true
+
+_.hasIn(instance, "d")
+; => false
+
+```
+
+
+
+## .merge
+This method recursively merges own and inherited enumerable string keyed properties of source objects into the destination object. Array and plain object properties are merged recursively. Other objects and value types are overridden by assignment. Source objects are applied from left to right. Subsequent sources overwrite property assignments of previous sources.
+
+
+#### Arguments
+object (Object): The destination object.
+
+[sources] (Objects*): The source objects.
+
+
+#### Returns
+(Object): Returns object.
+
+
+#### Example
+
+```autohotkey
+obj := {a: [{b : 2}, {d: 4}]}
+other := {a: [{c: 3}, {e: 5}]}
+_.merge(obj, other)
+; => {a: [{b: 2, c: 3}, {d: 4, e: 5}]}
 
 ```
 
