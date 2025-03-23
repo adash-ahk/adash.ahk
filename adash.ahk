@@ -23,35 +23,22 @@ class adash {
 		if (this.throwExceptions) {
 			this._validateTypes(param_array, ["array", "string"], param_size, ["integer"])
 		}
-		if (this.isString(param_array)) {
-			if (param_size <= 0) {
-				return strSplit(param_array)
-			}
-			if (param_size >= strLen(param_array)) {
-				return [strSplit(param_array)]
-			}
-			l_array := []
-			amountBlocks := ceil(strLen(param_array) / param_size)
-			l_array.capacity := amountBlocks
-			i := 0
-			while (i < amountBlocks) {
-				l_array.push(strSplit(subStr(param_array, i++ * param_size, param_size)))
-			}
-			return l_array
-		}
 		l_array := []
-		l_array.capacity := ceil(strLen(param_array.length) / param_size)
-		l_innerArr := []
-		l_innerArr.capacity := param_size
-		for value in param_array {
-			l_innerArr.push(value?)
-			if (l_innerArr.length >= param_size) {
-				l_innerArr.push(l_innerArr)
-				l_innerArr := []
-				l_innerArr.capacity := param_size
-			}
+		if (this.isString(param_array)) {
+			param_array := strSplit(param_array)
+		} else {
+			param_array := this.clone(param_array)
 		}
-		(l_innerArr.length && l_array.push(l_innerArr))
+		while (param_array.length > 0) {
+			l_innerArr := []
+			loop (param_size) {
+				if (param_array.length == 0) {
+					break
+				}
+				l_innerArr.push(param_array.removeAt(1))
+			}
+		l_array.push(l_innerArr)
+		}
 		return l_array
 	}
 	static compact(param_array) {
