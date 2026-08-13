@@ -1,3 +1,14 @@
+/**
+ * adash.ahk
+ * A modern utility library for AutoHotkey.
+ *
+ * @version    0.6.0
+ * @author     Shawn Brooker
+ * @license    MIT
+ * @requires   AutoHotkey v2.0
+ * @repository https://github.com/adash-ahk/adash.ahk
+ * @homepage   https://adash.app
+ */
 class adash {
 	; --- Static Variables ---
 	static stringCaseSense := false
