@@ -1,4 +1,3 @@
-
 # **Array methods**
 ## .chunk
 Creates an array of elements split into groups the length of size. If array can't be split evenly, the final chunk will be the remaining elements.
@@ -44,6 +43,33 @@ array (Array): The array to compact.
 ```autohotkey
 _.compact([0, 1, false, 2, "", 3])
 ; => [1, 2, 3]
+
+```
+
+
+
+## .concat
+Creates a new array concatenating array with any additional arrays and/or values.
+
+#### Arguments
+array (Array): The array to concatenate.
+
+[values] (...*): The values to concatenate.
+
+
+#### Returns
+(Array): Returns the new concatenated array.
+
+
+#### Example
+
+```autohotkey
+arr := [1]
+_.concat(arr, 2, [3], [[4]])
+; => [1, 2, 3, [4]]
+
+_.concat(arr)
+; => [1]
 
 ```
 
@@ -181,8 +207,75 @@ _.dropRight(100)
 
 
 
+## .dropRightWhile
+Creates a slice of array excluding elements dropped from the end. Elements are dropped until predicate returns falsey. The predicate is invoked with three arguments: (value, index, array).
+
+
+#### Arguments
+array (Array): The array to query.
+
+[predicate:=.identity] (Function): The function invoked per iteration.
+
+
+#### Returns
+
+(Array): Returns the slice of array.
+
+
+#### Example
+
+```autohotkey
+users := [ {user: "morpheus", active: true}		, {user: "neo", active: false}		, {user: "trinity", active: false} ]_.dropRightWhile(users, fn_dropRightWhile)
+; => [{user: "morpheus", active: true}]
+
+fn_dropRightWhile(o)	return !o.active; The _.matches iteratee shorthand._.dropRightWhile(users, {user: "trinity", active: false})
+; => [{user: "morpheus", active: true}, {user: "neo", active: false}]
+
+; The _.matchesProperty iteratee shorthand._.dropRightWhile(users, ["active", false])
+; => [{user: "morpheus", active: true}]
+
+; The _.property iteratee shorthand._.dropRightWhile(users, "active")
+; => [{user: "morpheus", active: true}, {user: "neo", active: false}, {user: "trinity", active: false}]
+
+```
+
+
+
+## .dropWhile
+Creates a slice of array excluding elements dropped from the beginning. Elements are dropped until predicate returns falsey. The predicate is invoked with three arguments: (value, index, array).
+
+
+#### Arguments
+array (Array): The array to query.
+
+[predicate:=.identity] (Function): The function invoked per iteration.
+
+
+#### Returns
+(Array): Returns the slice of array.
+
+
+#### Example
+
+```autohotkey
+users := [ {user: "morpheus", active: false}		, {user: "neo", active: false}		, {user: "trinity", active: true} ]_.dropWhile(users, fn_dropWhile)
+; => [{user: "trinity", active: true}]
+
+fn_dropWhile(o)	return !o.active; The _.matches iteratee shorthand._.dropWhile(users, {user: "morpheus", active: false})
+; => [{user: "neo", active: false}, {user: "trinity", active: true}]
+
+; The _.matchesProperty iteratee shorthand._.dropWhile(users, ["active", false])
+; => [{user: "trinity", active: true}]
+
+; The _.property iteratee shorthand._.dropWhile(users, "active")
+; => [{user: "morpheus", active: false}, {user: "neo", active: false}, {user: "trinity", active: true}]
+
+```
+
+
+
 ## .fill
-Fills elements of array with `value` from start up to, but not including, `end`.
+Fills elements of array with `value` from start up to, but not including, end.
 
 > [!Note]
 > This method mutates the array.
@@ -211,6 +304,72 @@ _.fill(arr, "a")
 
 _.fill([4, 6, 8, 10], "*", 2, 4)
 ; => [4, "*", "*", 10]
+
+```
+
+
+
+## .findIndex
+This method is like [_.find](/?id=find) except that it returns the index of the first element predicate returns truthy for instead of the element itself.
+
+
+#### Arguments
+array (Array): The array to inspect.
+
+[predicate:=.identity] (Function|Object|Array|string): The function invoked per iteration. An Object uses the `.matches` shorthand, an Array uses `.matchesProperty`, and a string uses `.property`.
+
+[fromIndex:=1] (number): The index to search from. Negative values count back from the end.
+
+
+#### Returns
+(number): Returns the index of the found element, else -1.
+
+
+#### Example
+
+```autohotkey
+users := [{user: "barney", active: false}		, {user: "fred", active: false}		, {user: "pebbles", active: true}]_.findIndex(users, (o) => o.user == "barney")
+; => 1
+
+; The _.matches iteratee shorthand._.findIndex(users, {user: "fred", active: false})
+; => 2
+
+; The _.matchesProperty iteratee shorthand._.findIndex(users, ["active", false])
+; => 1
+
+; The _.property iteratee shorthand._.findIndex(users, "active")
+; => 3
+
+```
+
+
+
+## .findLastIndex
+This method is like [_.findIndex](/?id=findindex) except that it iterates over elements of array from right to left.
+
+#### Arguments
+array (Array): The array to inspect.
+
+[predicate:=.identity] (Function|Object|Array|string): The function invoked per iteration. An Object uses the `.matches` shorthand, an Array uses `.matchesProperty`, and a string uses `.property`.
+
+[fromIndex:=array.length] (number): The index to search from. Negative values count back from the end.
+
+
+#### Returns
+(number): Returns the index of the found element, else -1.
+
+
+#### Example
+
+```autohotkey
+users := [{user: "morpheus", active: true}		, {user: "neo", active: false}		, {user: "trinity", active: false}]_.findLastIndex(users, {user: "morpheus", active: true})
+; => 1
+
+_.findLastIndex(users, ["active", true])
+; => 1
+
+_.findLastIndex(users, "active")
+; => 1
 
 ```
 
@@ -258,6 +417,9 @@ array (Array): The array to flatten.
 ```autohotkey
 _.flattenDeep([1])
 ; => [1]
+
+_.flattenDeep([1, [2]])
+; => [1, 2]
 
 _.flattenDeep([1, [2, [3, [4]], 5]])
 ; => [1, 2, 3, 4, 5]
@@ -427,6 +589,33 @@ _.intersection([2, 1], [2, 3])
 
 
 
+## .intersectionBy
+This method is like [_.intersection](/?id=intersection) except that it accepts `iteratee` which is invoked for each element of each array to generate the criterion by which they're compared. The iteratee is invoked with three arguments: (value, index, array). Values are taken from the first array.
+
+
+#### Arguments
+[arrays] (Array): The arrays to inspect. The last argument may be the iteratee if it is not an array.
+
+[iteratee:=.identity] (Function|Object|Array|string): The iteratee invoked per element. An Object uses the `.matches` shorthand, an Array uses `.matchesProperty`, and a string uses `.property`.
+
+
+#### Returns
+(Array): Returns the new array of intersecting values.
+
+
+#### Example
+
+```autohotkey
+_.intersectionBy([2.1, 1.2], [2.3, 3.4], floor)
+; => [2.1]
+
+_.intersectionBy([{x: 1}], [{x: 2}, {x: 1}], "x")
+; => [{x: 1}]
+
+```
+
+
+
 ## .join
 Converts all elements in array into a string separated by separator.
 
@@ -555,6 +744,106 @@ _.nth([1, 2, 3], 0)
 ; => 1
 
 ```
+
+
+
+## .pull
+Removes all given values from `array`.
+
+> [!Note]
+> Unlike `.without`, this method mutates `array`.
+
+
+#### Arguments
+array (Array): The array to modify.
+
+[values] (...*): The values to remove.
+
+
+#### Returns
+(Array): Returns `array`.
+
+
+#### Example
+
+```autohotkey
+array := ["a", "b", "c", "a", "b", "c"]_.pull(array, "a", "c")assert.test(array, ["b", "b"])```
+
+
+
+## .pullAll
+This method is like `.pull` except that it accepts an array of values to remove.
+
+> [!Note]
+> Unlike `.difference`, this method mutates `array`.
+
+
+#### Arguments
+array (Array): The array to modify.
+
+values (Array): The values to remove.
+
+
+#### Returns
+(Array): Returns `array`.
+
+
+#### Example
+
+```autohotkey
+array := ["a", "b", "c", "a", "b", "c"]_.pullAll(array, ["a", "c"])assert.test(array, ["b", "b"])```
+
+
+
+## .pullAllBy
+This method is like `.pullAll` except that it accepts `iteratee` which is invoked for each element of `array` and `values` to generate the criterion by which they're compared. The iteratee is invoked with one argument: (value).
+
+> [!Note]
+> This method mutates `array`.
+
+
+#### Arguments
+array (Array): The array to modify.
+
+values (Array): The values to remove.
+
+[iteratee:=.identity] (Function|Object|Array|string): The iteratee invoked per element. A string uses the `.property` shorthand.
+
+
+#### Returns
+(Array): Returns `array`.
+
+
+#### Example
+
+```autohotkey
+array := [{x: 1}, {x: 2}, {x: 3}, {x: 1}]_.pullAllBy(array, [{x: 1}, {x: 3}], "x")assert.test(array, [{x: 2}])```
+
+
+
+## .pullAllWith
+This method is like `.pullAll` except that it accepts `comparator` which is invoked to compare elements of `array` to `values`. The comparator is invoked with two arguments: (arrVal, othVal).
+
+> [!Note]
+> This method mutates `array`.
+
+
+#### Arguments
+array (Array): The array to modify.
+
+values (Array): The values to remove.
+
+comparator (Function): The comparator invoked per element.
+
+
+#### Returns
+(Array): Returns `array`.
+
+
+#### Example
+
+```autohotkey
+array := [{x: 1, y: 2}, {x: 3, y: 4}, {x: 5, y: 6}]_.pullAllWith(array, [{x: 3, y: 4}], _.isEqual)assert.test(array, [{x: 1, y: 2}, {x: 5, y: 6}])```
 
 
 
@@ -871,6 +1160,28 @@ _.without([2, 1, 2, 3], 1, 2)
 
 
 
+## .xor
+Creates an array of unique values that is the [symmetric difference](https://en.wikipedia.org/wiki/Symmetric_difference) of the given arrays. The order of result values is determined by the order they occur in the arrays.
+
+
+#### Arguments
+[arrays] (...Array): The arrays to inspect.
+
+
+#### Returns
+(Array): Returns the new array of filtered values.
+
+
+#### Example
+
+```autohotkey
+_.xor([2, 1], [2, 3])
+; => [1, 3]
+
+```
+
+
+
 ## .zip
 Creates an array of grouped elements, the first of which contains the first elements of the given arrays, the second of which contains the second elements of the given arrays, and so on.
 
@@ -920,6 +1231,175 @@ _.zipObject(["a", "b"], [1, 2])
 
 
 # **Collection methods**
+## .filter
+Iterates over elements of `collection`, returning an array of all elements `predicate` returns truthy for. The predicate is invoked with three arguments: (value, index|key, collection).
+
+
+#### Arguments
+collection (Array|Object|Map): The collection to iterate over.
+
+[predicate:=.identity] (Function|Object|Array|string): The function invoked per iteration. An Object uses the `.matches` shorthand, an Array uses `.matchesProperty`, and a string uses `.property`.
+
+#### Returns
+(Array): Returns the new filtered array.
+
+
+#### Example
+
+```autohotkey
+users := [{user: "barney", age: 36, active: true}, {user: "fred", age: 40, active: false}]_.filter(users, fn_filterFunc)
+; => [{user: "barney", age: 36, active: true}]
+
+fn_filterFunc(param_iteratee) {	if (param_iteratee.active) {		return true	}; The _.matches shorthand_.filter(users, {age: 36, active: true})
+; => [{user: "barney", age: 36, active: true}]
+
+; The _.matchesProperty shorthand_.filter(users, ["active", false])
+; => [{user: "fred", age: 40, active: false}]
+
+; The _.property shorthand_.filter(users, "active")
+; => [{user: "barney", age: 36, active: true}]
+
+```
+
+
+
+## .find
+Iterates over elements of `collection`, returning the first element `predicate` returns truthy for. The predicate is invoked with three arguments: (value, index|key, collection).
+
+
+#### Arguments
+collection (Array|Object): The collection to inspect.
+
+[predicate:=.identity] (Function|Object|Array|string): The function invoked per iteration. An Object uses the `.matches` shorthand, an Array uses `.matchesProperty`, and a string uses `.property`.
+
+[fromIndex:=1] (number): The index to search from.
+
+
+#### Returns
+(*): Returns the matched element, else `""`.
+
+
+#### Example
+
+```autohotkey
+users := [{user: "barney", age: 36, active: true}	, {user: "fred", age: 40, active: false}	, {user: "pebbles", age: 1, active: true}]_.find(users, (o) => o.age < 40)
+; => {user: "barney", age: 36, active: true}
+
+; The _.matches iteratee shorthand._.find(users, {age: 1, active: true})
+; => {user: "pebbles", age: 1, active: true}
+
+; The _.matchesProperty iteratee shorthand._.find(users, ["active", false])
+; => {user: "fred", age: 40, active: false}
+
+; The _.property iteratee shorthand._.find(users, "active")
+; => {user: "barney", age: 36, active: true}
+
+```
+
+
+
+## .flatMap
+Creates a flattened array of values by running each element in collection thru iteratee and flattening the mapped results. The iteratee is invoked with three arguments: (value, index|key, collection).
+
+
+#### Arguments
+collection (Array|Object): The collection to iterate over.
+
+[iteratee:=.identity] (Function): The function invoked per iteration.
+
+
+#### Returns
+(Array): Returns the new flattened array.
+
+
+#### Example
+
+```autohotkey
+fn_flatMapDuplicate(n) {	return [n, n]_.flatMap([1, 2], fn_flatMapDuplicate)
+; => [1, 1, 2, 2]
+
+```
+
+
+
+## .flatMapDeep
+This method is like `.flatMap` except that it recursively flattens the mapped results.
+
+
+#### Arguments
+collection (Array|Object): The collection to iterate over.
+
+[iteratee:=.identity] (Function): The function invoked per iteration.
+
+
+#### Returns
+(Array): Returns the new flattened array.
+
+
+#### Example
+
+```autohotkey
+fn_flatMapDeepDuplicate(n) {	return [[[n, n]]]_.flatMapDeep([1, 2], fn_flatMapDeepDuplicate)
+; => [1, 1, 2, 2]
+
+```
+
+
+
+## .flatMapDepth
+This method is like `.flatMap` except that it recursively flattens the mapped results up to depth times.
+
+
+#### Arguments
+collection (Array|Object): The collection to iterate over.
+
+[iteratee:=.identity] (Function): The function invoked per iteration.
+
+[depth:=1] (number): The maximum recursion depth.
+
+
+#### Returns
+(Array): Returns the new flattened array.
+
+
+#### Example
+
+```autohotkey
+fn_flatMapDepthDuplicate(n) {	return [[[n, n]]]_.flatMapDepth([1, 2], fn_flatMapDepthDuplicate, 2)
+; => [[1, 1], [2, 2]]
+
+_.flatMapDepth([1, 2], fn_flatMapDepthDuplicate, 1)
+; => [[[1, 1]], [[2, 2]]]
+
+```
+
+
+
+## .forEach
+Iterates over elements of `collection` and invokes `iteratee` for each element. The iteratee is invoked with three arguments: (value, index|key, collection). Iteratee functions may exit iteration early by explicitly returning `false`.
+
+
+#### Arguments
+collection (Array|Object|Map|string): The collection to iterate over.
+
+[iteratee:=.identity] (Function|Object|Array|string): The function invoked per iteration. An Object uses the `.matches` shorthand, an Array uses `.matchesProperty`, and a string uses `.property`.
+
+
+#### Returns
+(*): Returns `collection`.
+
+
+#### Aliases
+.each
+
+
+#### Example
+
+```autohotkey
+output := []_.forEach([1, 2], (value) => output.push(value))assert.test(output, [1, 2])output := []_.forEach({a: 1, b: 2}, (value, key) => output.push(key))assert.test(output, ["a", "b"])```
+
+
+
 ## .includes
 Checks if value is in collection. If collection is a string, it's checked for a substring of value.
 
@@ -938,6 +1418,26 @@ value (*): The value to search for.
 
 
 
+## .invokeMap
+Invokes the method at `path` of each element in `collection`, returning an array of the results of each invoked method. Any additional arguments are provided to each invoked method. If `path` is a function, it's invoked with each element as the first argument, followed by `args`.
+
+When an element doesn't have the method (for example, strings and numbers), the adash method of the same name is used instead, with the element as its first argument.
+
+
+#### Arguments
+collection (Array|Object|Map|string): The collection to iterate over.
+
+path (Array|Function|string): The path of the method to invoke or the function invoked per iteration.
+
+[args] (...*): The arguments to invoke each method with.
+
+
+#### Returns
+(Array): Returns the array of results.
+
+
+
+
 ## .map
 Creates an array of values by running each element in collection thru iteratee. The iteratee is invoked with three arguments: (value, index|key, collection).
 
@@ -949,7 +1449,7 @@ trimEnd, trimStart, parseInt, chunk, take, takeRight, drop, sampleSize, words, r
 #### Arguments
 collection (Array|Object): The collection to iterate over.
 
-[iteratee:=.identity] (Function): The function invoked per iteration.
+[iteratee:=.identity] (Function|Object|Array|string): The function invoked per iteration. An Object uses the `.matches` shorthand, an Array uses `.matchesProperty`, and a string uses `.property`.
 
 
 #### Returns
@@ -959,17 +1459,13 @@ collection (Array|Object): The collection to iterate over.
 #### Example
 
 ```autohotkey
-fn_square(n) {
-	return n * n
-}
-_.map([4, 8], fn_square)
+fn_square(n) {	return n * n_.map([4, 8], fn_square)
 ; => [16, 64]
 
 _.map({ a: 4, b: 8 }, fn_square)
 ; => [16, 64]
 
-data_array := ["Neo", "Morpheus", "Trinity"]
-_.map(data_array, (value) => ({name: value, id: A_Index}))
+data_array := ["Neo", "Morpheus", "Trinity"]_.map(data_array, (value) => ({name: value, id: A_Index}))
 ; => [{name: "Neo", id: 1}, {name: "Morpheus", id: 2}, {name: "Trinity", id: 3}]
 
 ```
@@ -991,6 +1487,32 @@ collection (Array|Object|String): The collection to sample.
 ```autohotkey
 _.sample([1, 2, 3, 4])
 ; => 2
+```
+
+
+
+
+## .sampleSize
+Gets `n` random elements at unique keys from `collection` up to the size of `collection`.
+
+
+#### Arguments
+collection (Array|Object|String): The collection to sample.
+
+[n:=1] (number): The number of elements to sample.
+
+
+#### Returns
+(Array): Returns the random elements.
+
+
+#### Example
+```autohotkey
+_.sampleSize([1, 2, 3], 2)
+; => [3, 1]
+
+_.sampleSize([1, 2, 3], 4)
+; => [2, 3, 1]
 ```
 
 
@@ -1054,11 +1576,11 @@ Checks if `predicate` returns truthy for **any** element of `collection`. Iterat
 #### Arguments
 collection (Array|Object): The collection to iterate over.
 
-[iteratees:=.identity] (Function): The function invoked per iteration.
+[predicate:=.identity] (Function|Object|Array|string): The function invoked per iteration. An Object uses the `.matches` shorthand, an Array uses `.matchesProperty`, and a string uses `.property`.
 
 
 #### Returns
-(Array): Returns true if any element passes the predicate check, else false.
+(boolean): Returns true if any element passes the predicate check, else false.
 
 
 #### Example
@@ -1066,6 +1588,134 @@ collection (Array|Object): The collection to iterate over.
 ```autohotkey
 _.some(["foo", "bar", 42], _.isNumber)
 ; => true
+
+```
+
+
+
+## .sortBy
+Creates an array of elements, sorted in ascending order by the results of running each element in a collection thru each iteratee. This method performs a stable sort, that is, it preserves the original sort order of equal elements. The iteratees are invoked with one argument: (value).
+
+Numbers sort numerically and before strings; strings follow `_.stringCaseSense`.
+
+
+#### Arguments
+collection (Array|Object|string): The collection to iterate over.
+
+[iteratees:=.identity] (Function|string|Array): The iteratees to sort by. A string sorts by that property path; an array of iteratees sorts by each in priority order.
+
+
+#### Returns
+(Array): Returns the new sorted array.
+
+
+#### Example
+
+```autohotkey
+users := [{name: "fred", age: 48}	, {name: "barney", age: 36}	, {name: "fred", age: 40}	, {name: "barney", age: 34}]_.sortBy(users, "age")
+; => [{name: "barney", age: 34}, {name: "barney", age: 36}, {name: "fred", age: 40}, {name: "fred", age: 48}]
+
+_.sortBy(users, ["name", "age"])
+; => [{name: "barney", age: 34}, {name: "barney", age: 36}, {name: "fred", age: 40}, {name: "fred", age: 48}]
+
+_.sortBy(users, (o) => o.name)
+; => [{name: "barney", age: 36}, {name: "barney", age: 34}, {name: "fred", age: 48}, {name: "fred", age: 40}]
+
+_.sortBy(["b", "f", "e", "c", "d", "a"])
+; => ["a", "b", "c", "d", "e", "f"]
+
+_.sortBy(["ab", "a", " abc", "abc"], _.size)
+; => ["a", "ab", "abc", " abc"]
+
+```
+
+
+
+
+# **Functions methods**
+## .after
+The opposite of `_.before`; this method creates a function that invokes `func` once it's called `n` or more times. Calls before that return `""`.
+
+
+#### Arguments
+n (number): The number of calls before `func` is invoked.
+
+func (Function): The function to restrict.
+
+
+#### Returns
+(Function): Returns the new restricted function.
+
+
+#### Example
+
+```autohotkey
+counter := {n: 0}fn := _.after(3, (*) => ++counter.n)fn.call()
+; => ""
+
+fn.call()
+; => ""
+
+fn.call()
+; => 1
+
+fn.call()
+; => 2
+
+```
+
+
+
+## .before
+Creates a function that invokes `func`, with the arguments of the created function, while it's called less than `n` times. Subsequent calls to the created function return the result of the last `func` invocation.
+
+
+#### Arguments
+n (number): The number of calls at which `func` is no longer invoked.
+
+func (Function): The function to restrict.
+
+
+#### Returns
+(Function): Returns the new restricted function.
+
+
+#### Example
+
+```autohotkey
+counter := {n: 0}fn := _.before(3, (*) => ++counter.n)fn.call()
+; => 1
+
+fn.call()
+; => 2
+
+fn.call()
+; => 2
+
+```
+
+
+
+## .once
+Creates a function that is restricted to invoking `func` once. Repeat calls to the function return the value of the first invocation. `func` is invoked with the arguments of the created function.
+
+
+#### Arguments
+func (Function): The function to restrict.
+
+
+#### Returns
+(Function): Returns the new restricted function.
+
+
+#### Example
+
+```autohotkey
+counter := {n: 0}initialize := _.once((*) => ++counter.n)initialize.call()
+; => 1
+
+initialize.call()
+; => 1
 
 ```
 
@@ -1266,13 +1916,13 @@ _.isEmpty(map())
 ## .isEqual
 Performs a deep comparison between two values to determine if they are equivalent.
 
-This method supports comparing strings and objects.
+This method supports comparing numbers, strings, Arrays, Maps, plain objects, and class instances (by their own properties). Numbers and numeric strings compare numerically, other strings follow `.stringCaseSense`, key order does not matter, and circular references are handled. Functions and other built-in objects are only equal to themselves.
 
 
 #### Arguments
 value (*): The value to compare.
 
-other (...*): The other value to compare.
+other (...*): The other values to compare.
 
 
 #### Returns
@@ -1291,9 +1941,33 @@ _.isEqual({ a: 1 }, { a: 1 })
 _.isEqual(1, 1, 2)
 ; => false
 
-_.stringCaseSense := true
-_.isEqual({ a: "a" }, { a: "A" })
+_.stringCaseSense := true_.isEqual({ a: "a" }, { a: "A" })
 ; => false
+
+```
+
+
+
+## .isError
+Checks if value is an exception error obj.
+
+
+#### Arguments
+value (*): The value to check.
+
+
+#### Returns
+(boolean): Returns true if value is an exception object, else false.
+
+
+#### Example
+
+```autohotkey
+_.isError(Error("something broke"))
+; => true
+
+_.isError(ValueError("bad value"))
+; => true
 
 ```
 
@@ -1387,7 +2061,7 @@ value (*): The value to check.
 
 
 #### Returns
-(boolean): Returns `true` if `value` is map, else `false`.
+(boolean): Returns `true` if `value` is a native function, else `false`.
 
 
 #### Example
@@ -1410,13 +2084,13 @@ Partial comparisons will match empty array and empty object `source` values agai
 
 
 #### Arguments
-object (Object): The object to inspect.
+object obj: The object to inspect.
 
-source (Object): The object of property values to match.
+source obj: The object of property values to match.
 
 
 #### Returns
-(boolean): Returns `true` if `object` is a match, else `false`.
+(boolean): Returns true if object is a match, else false.
 
 #### Example
 
@@ -1439,15 +2113,17 @@ _.isMatch(obj, {b: 2, z: 99})
 
 
 ## .isNative
-Checks if value is a pristine native function.
+Checks if `value` is a pristine native function.
 
 
 #### Arguments
 value (*): The value to check.
 
 
+
 #### Returns
 (boolean): Returns `true` if `value` is a native function, else `false`.
+
 
 #### Example
 
@@ -1778,6 +2454,31 @@ _.max([])
 
 
 
+## .maxBy
+This method is like [_.max](/?id=max) except that it accepts `iteratee` which is invoked for each element in `array` to generate the criterion by which the value is ranked. The iteratee is invoked with one argument: (value).
+
+#### Arguments
+array (Array): The array to iterate over.
+
+[iteratee:=.identity] (Function): The iteratee invoked per element.
+
+
+#### Returns
+(*): Returns the maximum value.
+
+#### Example
+
+```autohotkey
+objects := [ {n: 4 }, { n: 2 }, { n: 8 }, { n: 6 } ]_.maxBy(objects, fn_maxByFunc)
+; => {n: 8}
+
+fn_maxByFunc(o)	return o.n; The _.property iteratee shorthand_.maxBy(objects, "n")
+; => {n: 8}
+
+```
+
+
+
 ## .mean
 Computes the mean of the values in `array`.
 
@@ -1794,6 +2495,31 @@ array (Array): The array to iterate over.
 
 ```autohotkey
 _.mean([4, 2, 8, 6])
+; => 5
+
+```
+
+
+
+## .meanBy
+This method is like [_.mean](/?id=mean) except that it accepts `iteratee` which is invoked for each element in `array` to generate the value to be averaged. The iteratee is invoked with one argument: (value).
+
+#### Arguments
+array (Array): The array to iterate over.
+
+[iteratee:=.identity] (Function): The iteratee invoked per element.
+
+
+#### Returns
+(number): Returns the mean.
+
+#### Example
+
+```autohotkey
+objects := [{"n": 4}, {"n": 2}, {"n": 8}, {"n": 6}]_.meanBy(objects, fn_meanByFunc)
+; => 5
+
+fn_meanByFunc(o)	return o.n; The _.property iteratee shorthand._.meanBy(objects, "n")
 ; => 5
 
 ```
@@ -1820,6 +2546,31 @@ _.min([4, 2, 8, 6])
 
 _.min([])
 ; => ""
+
+```
+
+
+
+## .minBy
+This method is like [_.min](/?id=min) except that it accepts `iteratee` which is invoked for each element in `array` to generate the criterion by which the value is ranked. The iteratee is invoked with one argument: (value).
+
+#### Arguments
+array (Array): The array to iterate over.
+
+[iteratee:=.identity] (Function): The iteratee invoked per element.
+
+
+#### Returns
+(*): Returns the minimum value.
+
+#### Example
+
+```autohotkey
+objects := [ {n: 4 }, { n: 2 }, { n: 8 }, { n: 6 } ]_.minBy(objects, fn_minByFunc)
+; => {n: 2}
+
+fn_minByFunc(o)	return o.n; The _.property iteratee shorthand_.minBy(objects, "n")
+; => {n: 2}
 
 ```
 
@@ -1919,6 +2670,32 @@ array (Array): The array to iterate over.
 
 ```autohotkey
 _.sum([4, 2, 8, 6])
+; => 20
+
+```
+
+
+
+## .sumBy
+This method is like [_.sum](/?id=sum) except that it accepts `iteratee` which is invoked for each element in `array` to generate the value to be summed. The iteratee is invoked with one argument: (value).
+
+
+#### Arguments
+array (Array): The array to iterate over.
+[iteratee:=.identity] (Function): The iteratee invoked per element.
+
+
+#### Returns
+(number): Returns the sum.
+
+
+#### Example
+
+```autohotkey
+objects := [ {"n": 4 }, { "n": 2 }, { "n": 8 }, { "n": 6 } ]_.sumBy(objects, fn_sumByFunc)
+; => 20
+
+fn_sumByFunc(o)	return o.n; The _.property iteratee shorthand_.sumBy(objects, "n")
 ; => 20
 
 ```
@@ -2068,96 +2845,6 @@ _.get(obj, "a.b.c", "default")
 
 
 
-## .has
-Checks if `path` is a direct property of `object`.
-
-
-#### Arguments
-object (Object): The object to query.
-
-path (Array|string): The path to check.
-
-
-#### Returns
-(boolean): Returns true if path exists, else false.
-
-
-#### Example
-
-```autohotkey
-someBase := { a: "Alpha" }
-instance := { base: someBase, b: "Beta" }
-_.has(someBase, "a")
-; => true
-
-_.has(instance, "a")
-; => false
-
-_.has(instance, "b")
-; => true
-
-```
-
-
-
-## .hasIn
-Checks if `path` is a direct or inherited property of `object`.
-
-
-#### Arguments
-object (Object): The object to query.
-
-path (Array|string): The path to check.
-
-
-#### Returns
-(boolean): Returns true if path exists, else false.
-
-
-#### Example
-
-```autohotkey
-someBase := { a: "Alpha" }
-instance := { base: someBase, b: "Beta" }
-_.hasIn(instance, "a")
-; => true
-
-_.hasIn(instance, "b")
-; => true
-
-_.hasIn(instance, "d")
-; => false
-
-```
-
-
-
-## .merge
-This method recursively merges own and inherited enumerable string keyed properties of source objects into the destination object. Array and plain object properties are merged recursively. Other objects and value types are overridden by assignment. Source objects are applied from left to right. Subsequent sources overwrite property assignments of previous sources.
-
-
-#### Arguments
-object (Object): The destination object.
-
-[sources] (Objects*): The source objects.
-
-
-#### Returns
-(Object): Returns object.
-
-
-#### Example
-
-```autohotkey
-obj := {a: [{b : 2}, {d: 4}]}
-other := {a: [{c: 3}, {e: 5}]}
-_.merge(obj, other)
-; => {a: [{b: 2, c: 3}, {d: 4, e: 5}]}
-
-```
-
-
-
 ## .set
 Sets the value at `path` of `object`. If a portion of `path` doesn't exist, it's created. Objects are created for all missing properties.
 
@@ -2189,6 +2876,32 @@ assert.test(obj.x[1].y.z, 5)
 
 
 # **String methods**
+## .camelCase
+Converts string to camel case.
+
+#### Arguments
+[string:=""] (string): The string to convert.
+
+#### Returns
+(string): Returns the camel cased string.
+
+
+#### Example
+
+```autohotkey
+_.camelCase("--foo-bar--")
+; => "fooBar"
+
+_.camelCase("fooBar")
+; => "fooBar"
+
+_.camelCase("__FOO_BAR__")
+; => "fooBar"
+
+```
+
+
+
 ## .endsWith
 Checks if `string` ends with the given target string.
 
@@ -2246,6 +2959,62 @@ When working with HTML you should always quote attribute values to reduce XSS ve
 str := "neo, morpheus, & trinity"
 _.escape(str)
 ; => "neo, morpheus, &amp; trinity"
+
+```
+
+
+
+## .kebabCase
+Converts `string` to kebab case.
+
+
+#### Arguments
+[string:=""] (string): The string to convert.
+
+
+#### Returns
+(string): Returns the kebab cased string.
+
+
+#### Example
+
+```autohotkey
+_.kebabCase("Foo Bar")
+; => "foo-bar"
+
+_.kebabCase("fooBar")
+; => "foo-bar"
+
+_.kebabCase("--FOO_BAR--")
+; => "foo-bar"
+
+```
+
+
+
+## .lowerCase
+Converts `string`, as space separated words, to lower case.
+
+
+#### Arguments
+[string:=""] (string): The string to convert.
+
+
+#### Returns
+(string): Returns the lower cased string.
+
+
+#### Example
+
+```autohotkey
+_.lowerCase("--Foo-Bar--")
+; => "foo bar"
+
+_.lowerCase("fooBar")
+; => "foo bar"
+
+_.lowerCase("__FOO_BAR__")
+; => "foo bar"
 
 ```
 
@@ -2415,6 +3184,107 @@ _.repeat("abc", 2)
 
 _.repeat("abc", 0)
 ; => ""
+
+```
+
+
+
+## .replace
+Replaces the first match of `pattern` in `string` with `replacement`. A `pattern` wrapped in slashes (for example `"/\d+/"`) is treated as a regular expression, and its flags (`i`, `m`, `s`, `x`) are supported.
+
+#### Arguments
+string (string): The string to modify.
+
+pattern (RegExp|string): The pattern to replace.
+
+replacement (string): The match replacement.
+
+#### Returns
+
+(string): Returns the modified string.
+
+
+
+
+## .snakeCase
+Converts `string` to snake case.
+
+#### Arguments
+[string:=""] (string): The string to convert.
+
+
+#### Returns
+(string): Returns the snake cased string.
+
+
+#### Example
+
+```autohotkey
+_.snakeCase("Foo Bar")
+; => "foo_bar"
+
+_.snakeCase("fooBar")
+; => "foo_bar"
+
+_.snakeCase("--FOO-BAR--")
+; => "foo_bar"
+
+```
+
+
+
+## .split
+Splits `string` by `separator`.
+
+> [!Note]
+> This method is based on [`String#split`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split).
+
+
+#### Arguments
+[string:=""] (string): The string to split.
+
+separator (RegExp|string): The separator pattern to split by. Use `"/pattern/flags"` for a regular expression. An empty string splits into characters; omitting it returns the whole string as the only element.
+
+[limit] (number): The length to truncate results to.
+
+#### Returns
+(Array): Returns the string segments.
+
+
+#### Example
+
+```autohotkey
+_.split("a-b-c", "-", 2)
+; => ["a", "b"]
+
+_.split("a--b-c", "/-+/")
+; => ["a", "b", "c"]
+
+```
+
+
+
+## .startCase
+Converts `string` to start case.
+
+#### Arguments
+[string:=""] (string): The string to convert.
+
+#### Returns
+(string): Returns the start cased string.
+
+
+#### Example
+
+```autohotkey
+_.startCase("--foo-bar--")
+; => "Foo Bar"
+
+_.startCase("fooBar")
+; => "Foo Bar"
+
+_.startCase("__FOO_BAR__")
+; => "Foo Bar"
 
 ```
 
@@ -2653,6 +3523,34 @@ _.unescape(str)
 
 
 
+## .upperCase
+Converts `string`, as space separated words, to upper case.
+
+
+#### Arguments
+[string:=""] (string): The string to convert.
+
+
+#### Returns
+(string): Returns the upper cased string.
+
+
+#### Example
+
+```autohotkey
+_.upperCase("--Foo-Bar--")
+; => "FOO BAR"
+
+_.upperCase("fooBar")
+; => "FOO BAR"
+
+_.upperCase("__FOO_BAR__")
+; => "FOO BAR"
+
+```
+
+
+
 ## .upperFirst
 Converts the first character of `string` to upper case.
 
@@ -2708,6 +3606,27 @@ _.words("neo, morpheus, & trinity", "[^, ]+")
 
 
 # **Util methods**
+## .constant
+Creates a function that returns `value`.
+
+
+#### Arguments
+value (*): The value to return from the new function.
+
+
+#### Returns
+(Function): Returns the new constant function.
+
+
+#### Example
+
+```autohotkey
+obj := _.times(2, _.constant({a: 1}))
+; => [{a: 1}, {a: 1}]
+```
+
+
+
 ## .identity
 This method returns the first argument it receives.
 
@@ -2733,6 +3652,98 @@ _.identity(obj)
 
 
 
+## .matches
+Creates a function that performs a shallow comparison between a given object and source, returning `true` if the given object has equivalent property values, else `false`.
+
+
+#### Arguments
+source (Object): The object of property values to match.
+
+
+#### Returns
+(Function): Returns the new spec function.
+
+
+#### Example
+
+```autohotkey
+objects := [{ a: 1, b: 2, c: 3 }, { a: 4, b: 5, c: 6 }]
+_.filter(objects, _.matches({ a: 4, c: 6 }))
+; => [{ a: 4, b: 5, c: 6 }]
+
+functor := _.matches({ a: 4 })
+_.filter(objects, functor)
+; => [{ a: 4, b: 5, c: 6 }]
+
+functor.call({ a: 1 })
+; => false
+
+```
+
+
+
+## .matchesProperty
+Creates a function that performs a partial deep comparison between the value at `path` of a given object to `srcValue`, returning true if the object value is equivalent, else false.
+
+
+#### Arguments
+path (Array|string): The path of the property to get.
+
+srcValue (*): The value to match.
+
+
+#### Returns
+(Function): Returns the new spec function.
+
+
+#### Example
+
+```autohotkey
+objects := [{ a: 1, b: 2, c: 3 }, { a: 4, b: 5, c: 6 }]
+_.find(objects, _.matchesProperty("a", 4))
+; => { a: 4, b: 5, c: 6 }
+
+_.filter(objects, _.matchesProperty("a", 4))
+; => [{ a: 4, b: 5, c: 6 }]
+
+objects := [{ a: {b: 2} }, { a: {b: 1} }]
+_.find(objects, _.matchesProperty(["a", "b"], 1))
+; => { a: {b: 1} }
+
+```
+
+
+
+## .property
+Creates a function that returns the value at `path` of a given object.
+
+
+#### Arguments
+path (Array|string): The path of the property to get.
+
+
+#### Returns
+(Function): Returns the new accessor function.
+
+
+#### Example
+
+```autohotkey
+objects := [{ a: { b: 2 } }, { a: { b: 1 } }]
+_.map(objects, _.property("a.b"))
+; => [2, 1]
+
+_.map(objects, _.property(["a", "b"]))
+; => [2, 1]
+
+objects := [{name: "neo"}, {name: "morpheus"}]
+_.map(objects, _.property("name"))
+; => ["neo", "morpheus"]
+
+```
+
+
+
 ## .times
 Invokes the `iteratee` `n` times, returning an array of the results of each invocation. The iteratee is invoked with one argument; (index).
 
@@ -2748,8 +3759,13 @@ n (number): The number of times to invoke iteratee.
 
 #### Example
 ```autohotkey
-_.times(4)
-; => [1, 2, 3, 4]
+_.times(4, _.constant(0))
+; => [0, 0, 0, 0]
+
+; make an array with random numbers
+boundFunc := _.random.bind(1, 1000, 0)
+array := _.times(5, boundFunc)
+; => [395, 364, 809, 904, 449]
 ```
 
 
