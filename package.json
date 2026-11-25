@@ -1,20 +1,19 @@
 {
 	"name": "adash.ahk",
-	"version": "0.7.0",
+	"version": "0.8.0",
 	"description": "A modern utility library for AutoHotkey",
 	"main": "adash.ahk",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/adash-ahk/adash.ahk.git"
 	},
-	"dependencies": {},
-	"devDependencies": {},
+	"dependencies": { },
 	"author": "Shawn Brooker",
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/adash-ahk/adash.ahk/issues"
 	},
-	"homepage": "https://adash.app",
+	"homepage": "https://adash-ahk.github.io/",
 	"keywords": [
 		"autohotkey",
 		"ahk",
